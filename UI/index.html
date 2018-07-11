@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="description" content="MyDiary is an online journal where users can record their thoughts and feelings">
   <meta name="author" content="Olusola Oguntimehin">
   <title>Home | MyDiary</title>
@@ -12,7 +13,7 @@
   <link rel="icon" type="image/png" href="./img/favicon.png" sizes="32x32" />
 </head>
 <body>
-  <header class="compact">
+  <header>
     <div class="container">
       <div id="brand">
         <a href="./index.html">
@@ -22,6 +23,9 @@
       <nav>
         <a href="#" class="menu-icon"></a>
         <ul>
+          <li>
+            <a href="#" class="close-menu"></a>
+          </li>
           <li>
             <a href="./login.html" class="nav-link">
               Login
@@ -38,7 +42,7 @@
         Stories from your life all in one place
       </p>
       <div>
-        <a href="./login.html" class="button btn-success">
+        <a href="./signup.html" class="button btn-success">
           Get Started
         </a>
       </div>
@@ -52,30 +56,31 @@
       <div class="box">
         <img src="./img/remind-icon.svg" alt="remind-icon" width="50px">
         <h2 class="title"> Reminders </h1>
-          <p>
-           Choose a time and we'll send you daily reminders to write in your diary.
-         </p>
-       </div>
-       <div class="box">
+        <p>
+         Choose a time and we'll send you daily reminders to write in your diary.
+        </p>
+      </div>
+      <div class="box">
         <img src="./img/hashtag-icon.svg" alt="hashtag-icon" width="50px">
         <h2 class="title"> Tags </h1>
-          <p>
-            Add tags to your thoughts to filter by specific topics.
-          </p>
-        </div>
-        <div class="box">
-          <img src="./img/fav-icon.svg" alt="fav-icon" width="50px">
-          <h2 class="title"> Favorites </h1>
-            <p>
-              Easily find your favorite memories and be happy again
-            </p>
-          </div>
-        </div>
-      </section>
+        <p>
+          Add tags to your thoughts to filter by specific topics.
+        </p>
+      </div>
+      <div class="box">
+        <img src="./img/fav-icon.svg" alt="fav-icon" width="50px">
+        <h2 class="title"> Favorites </h1>
+        <p>
+            Easily find your favorite memories and be happy again
+        </p>
+      </div>
+    </div>
+  </section>
       <footer class="footer">
         <div class="container">
           <h4> Built with &#10084; by <a href="https://twitter.com/olusola_dev">Olusola</a></h4>
         </div>
       </footer>
-    </body>
-    </html>
+      <script type="text/javascript" src="./js/elements.js"></script>
+</body>
+</html>
