@@ -493,6 +493,11 @@ nav ul {
           transform: translate3d(100%, 0, 0);
   background: #6865f9;
 }
+.full-story {
+  margin-top: 50px;
+  background: #ffffff;
+  width: 75%;
+}
 @media only screen and (max-width: 768px) {
   header {
     position: relative;
@@ -558,3 +563,117 @@ nav ul {
     margin-top: 50px;
   }
 }
+.full-story{
+	margin-left:auto;
+	margin-right:auto;
+	padding: 50px 0;
+}
+.full-story-date{
+	color:#666;
+	font-size:16px;
+	margin-left: 5px;
+	padding-left: 50px
+}
+.full-story-title{
+	color:#333;
+	font-weight: bold;
+	font-size:35px;
+	margin-top: 5px;
+	padding-left: 50px
+}
+#full-story-content{
+	font-szie:25px;
+	line-height: 1.8em;
+	padding: 0 50px
+}
+.centered-2{
+	width:100%;
+	height:60px;
+	//padding:0 50px;
+	margin-top: 40px;
+}
+.btn2 {
+  background-color: #00d1b2;
+  width:100px;
+	height:40px;
+	border-radius: 4px;
+	border:none;
+	cursor:pointer;
+	
+}
+.form-sub{
+	margin-right: 10px;
+	float: right;
+  	color: white;
+}
+.form-delete{
+	float: right;
+	margin-right: 50px;
+	background-color: transparent;
+	color:#3bbfaf !important;
+}
+.form-Not{
+	background-color: firebrick;
+	color:#fff;
+}
+.icon{
+	float:left;
+	width:5%;
+	margin-left: 40px;
+	height:40px;
+}
+svg{
+	width:25px;
+	margin-left: 10px;
+	color:#444;
+	transition: .2s ease-in;
+}
+.scale{
+    animation: scale_in .3s linear 1;
+}
+@keyframes scale_in{
+	0%{
+		transform: scale(1);
+	}
+	100%{
+		transform: scale(1.1);
+	}
+}
+.modal_content{
+    top:0;
+    left:0;
+    overflow: auto;
+    display:none;
+    width:100%;
+    height: 100%;
+    position:fixed;
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.7));
+    z-index: 1;
+}
+.content{
+	width:38%;
+	text-align: center;
+	margin:200px auto;
+	background-color: #fff;
+	height:200px;
+	padding: 0 15px;
+	box-shadow: 2px -1px 3px 2px rgba(255,255,255,0.5);
+}
+.sure{
+	padding-top: 80px;
+}
+@media only screen and (max-width: 768px) {
+   .full-story{
+    width: 100%;
+	}
+	.btn2{
+		height:30px;
+		width:80px;
+	}
+	svg{
+		margin-top: 3px;
+	}
+	.content{
+		width:80%;
+	}
+ }
