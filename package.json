@@ -1,0 +1,24 @@
+{
+  "name": "my-diary",
+  "version": "1.0.0",
+  "description": "MyDiary is an online journal where users can pen down their thoughts and feelings",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olusoladavid/my-diary.git"
+  },
+  "author": "Olusola Oguntimehin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/olusoladavid/my-diary/issues"
+  },
+  "homepage": "https://github.com/olusoladavid/my-diary#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0"
+  }
+}
