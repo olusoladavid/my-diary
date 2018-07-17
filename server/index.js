@@ -1,10 +1,20 @@
-import http from 'http';
+import express from 'express';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import cors from 'cors';
+import router from './routes/index';
 
-http
-  .createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello World\n');
-  })
-  .listen(3000, '127.0.0.1');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-console.log('Server running at http://127.0.0.1:3000/');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(morgan('dev'));
+app.use(cors());
+app.use('/api/v1', router);
+
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}!`);
+});
+
+export default app;
