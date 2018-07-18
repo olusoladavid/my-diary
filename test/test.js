@@ -7,7 +7,7 @@ import app from '../server/index';
 const { expect } = chai;
 chai.use(chaiHttp);
 
-describe('Example Node Server', () => {
+describe('API base', () => {
   it('should return 200', (done) => {
     chai
       .request(app)
