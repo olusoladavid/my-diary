@@ -1,11 +1,14 @@
 import express from 'express';
-// import Entry from '../models/entry';
+import getAllEntries from '../controllers/getAllEntries';
 
 const router = express.Router();
 
-/* GET home page. */
+/* GET API base */
 router.get('/', (req, res) => {
-  res.json({ Hello: 'World' });
+  res.json({ MyDiary: 'API v1' });
 });
+
+/* GET all user entries */
+router.get('/entries', getAllEntries);
 
 export default router;
