@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="MyDiary is an online journal where users can record their thoughts and feelings">
+  <meta name="author" content="Olusola Oguntimehin">
+  <title>Profile | MyDiary</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> 
+  <link rel="icon" type="image/png" href="./img/favicon.png" sizes="32x32" />
+</head>
+<body>
+  <div class="page page--is-flex page--stretches">
+    <header class="header">
+      <div class="container">
+        <div class="header__brand">
+          <a class="link" href="./index.html">
+            MyDiary
+          </a>
+        </div>
+        <nav class="nav">
+          <a href="#" class="nav__open-menu js-open-menu"></a>
+          <ul class="list nav__list js-nav-list">
+            <li class="list__item">
+              <a href="#" class="nav__close-menu js-close-menu"></a>
+            </li>
+            <li class="list__item">
+              <a href="./new-story.html" class="link nav__link">
+                New Story
+              </a>
+            </li>
+            <li class="list__item">
+              <a href="./stories.html" class="link nav__link">
+                Stories
+              </a>
+            </li>
+            <li class="list__item">
+              <a href="./stories.html?filter=favs" class="link nav__link">
+                Favorites
+              </a>
+            </li>
+            <li class="list__item">
+              <a href="./index.html" class="link nav__link">
+                Logout
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+    	<div class="profile">
+    		<div class="profile__header">
+    			<div>
+    				<img src="./img/balloon.jpg" alt="background" class="header__img">
+    				<div class="profile__title">
+    					<h3 class="title__text">Your Profile</h3>
+    				</div>
+    			</div>
+    		</div>
+
+       <div class="profile__data">
+        <ul class="list">
+         <li class="data__item">
+          29
+          <span class="span">Stories</span>
+        </li>
+        <li class="data__item">
+          18
+          <span class="span">Days</span>
+        </li>
+        <li class="data__item">
+          7
+          <span class="span">Favorites</span>
+        </li>
+      </ul>
+    </div>
+    <div class="reminder-block">
+      <p>Daily Reminder</p> 
+      <label class="switch"><input type="checkbox" class="switch__input" />
+       <div class="switch__div"></div>
+     </label>
+   </div>
+ </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <h4> Built with &#10084; by <a class="link" href="https://twitter.com/olusola_dev">Olusola</a></h4>
+  </div>
+</footer>
+</div>
+<script type="text/javascript" src="./js/main.js"></script>
+</body>
+</html>
