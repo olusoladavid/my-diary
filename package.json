@@ -4,7 +4,7 @@
   "description": "MyDiary is an online journal where users can pen down their thoughts and feelings",
   "main": "index.js",
   "engines": {
-    "node": "8.11.1"
+    "node": "10.0.0"
   },
   "scripts": {
     "dev": "nodemon server/index.js --exec babel-node",
