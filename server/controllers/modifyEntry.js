@@ -6,8 +6,8 @@ const modifyEntry = (req, res) => {
   const indexOfFound = entries.findIndex(entry => entry.id === Number(req.params.id));
 
   if (indexOfFound > -1 && error.isEmpty()) {
-    const found = { ...entries[indexOfFound] };
-    entries[indexOfFound] = { ...found, ...req.body };
+    const found = Object.assign({}, entries[indexOfFound]);
+    entries[indexOfFound] = Object.assign(found, req.body);
     return res.status(200).json(entries[indexOfFound]);
   }
   if (indexOfFound === -1) {
