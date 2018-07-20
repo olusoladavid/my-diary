@@ -44,6 +44,7 @@ describe('/GET/:id entries', () => {
         expect(res.body).to.have.property('timestamp');
         expect(res.body).to.have.property('title');
         expect(res.body).to.have.property('content');
+        expect(res.body).to.have.property('isFavorite');
         done();
       });
   });
@@ -68,6 +69,7 @@ describe('/POST entries', () => {
       timestamp: 153677782990,
       title: 'title',
       content: 'content',
+      isFavorite: false,
     };
     chai
       .request(app)
@@ -75,8 +77,12 @@ describe('/POST entries', () => {
       .send(sampleEntry)
       .end((err, res) => {
         expect(res).to.have.status(201);
-        expect(res.body).to.be.an('array');
-        expect(res.body.length).to.be.eql(entriesLengthBeforeRequest + 1);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('timestamp', sampleEntry.timestamp);
+        expect(res.body).to.have.property('title', sampleEntry.title);
+        expect(res.body).to.have.property('content', sampleEntry.content);
+        expect(res.body).to.have.property('isFavorite', sampleEntry.isFavorite);
+        expect(entries.length).to.be.eql(entriesLengthBeforeRequest + 1);
         done();
       });
   });
@@ -92,6 +98,56 @@ describe('/POST entries', () => {
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('errors');
         expect(entries.length).to.be.eql(entriesLengthBeforeRequest);
+        done();
+      });
+  });
+});
+
+describe('/PUT/:id entries', () => {
+  it('should modify a previously created entry', (done) => {
+    const entriesLengthBeforeRequest = entries.length;
+    const modification = {
+      title: 'another title',
+      isFavorite: true,
+    };
+    chai
+      .request(app)
+      .put('/api/v1/entries/1')
+      .send(modification)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body.id).to.be.eql(1);
+        expect(res.body).to.have.property('title', modification.title);
+        expect(res.body).to.have.property('isFavorite', modification.isFavorite);
+        expect(entries.length).to.be.eql(entriesLengthBeforeRequest);
+        done();
+      });
+  });
+
+  it('should reject invalid modification', (done) => {
+    const entriesLengthBeforeRequest = entries.length;
+    chai
+      .request(app)
+      .put('/api/v1/entries/1')
+      .send({ title: 5 })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('errors');
+        expect(entries.length).to.be.eql(entriesLengthBeforeRequest);
+        done();
+      });
+  });
+
+  it('should not modify an entry', (done) => {
+    chai
+      .request(app)
+      .put('/api/v1/entries/0')
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('errors');
         done();
       });
   });

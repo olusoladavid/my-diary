@@ -9,7 +9,7 @@ const addEntry = (req, res) => {
   const entry = req.body;
   entry.id = entries.length + 1;
   entries.push(entry);
-  return res.status(201).json(entries);
+  return res.status(201).json(entry);
 };
 
 export default addEntry;
