@@ -6,7 +6,6 @@ import entries from '../server/db/entries';
 const { expect } = chai;
 chai.use(chaiHttp);
 
-
 describe('/GET API base', () => {
   it('should return 200', (done) => {
     chai
@@ -56,7 +55,43 @@ describe('/GET/:id entries', () => {
       .end((err, res) => {
         expect(res).to.have.status(404);
         expect(res.body).to.be.an('object');
-        expect(res.body).to.have.property('error');
+        expect(res.body).to.have.property('errors');
+        done();
+      });
+  });
+});
+
+describe('/POST entries', () => {
+  it('should add a new entry to user entries', (done) => {
+    const entriesLengthBeforeRequest = entries.length;
+    const sampleEntry = {
+      timestamp: 153677782990,
+      title: 'title',
+      content: 'content',
+    };
+    chai
+      .request(app)
+      .post('/api/v1/entries')
+      .send(sampleEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        expect(res.body).to.be.an('array');
+        expect(res.body.length).to.be.eql(entriesLengthBeforeRequest + 1);
+        done();
+      });
+  });
+
+  it('should reject invalid entry', (done) => {
+    const entriesLengthBeforeRequest = entries.length;
+    chai
+      .request(app)
+      .post('/api/v1/entries')
+      .send({})
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('errors');
+        expect(entries.length).to.be.eql(entriesLengthBeforeRequest);
         done();
       });
   });

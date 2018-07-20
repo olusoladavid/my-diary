@@ -1,7 +1,6 @@
 const entries = [
   {
     id: 1,
-    user: 'anonymous',
     timestamp: 1530843015383,
     title: 'I became a change agent',
     content: `After many years of pushing for a change, we finally broke through.
@@ -10,7 +9,6 @@ const entries = [
   },
   {
     id: 2,
-    user: 'anonymous',
     timestamp: 1531853015383,
     title: 'I kissed her',
     content: `It happened on a dusty evening. We were strolling down the park as I 
