@@ -4,6 +4,7 @@ import getAllEntries from '../controllers/getAllEntries';
 import getEntry from '../controllers/getEntry';
 import addEntry from '../controllers/addEntry';
 import modifyEntry from '../controllers/modifyEntry';
+import deleteEntry from '../controllers/deleteEntry';
 
 const router = express.Router();
 
@@ -50,5 +51,8 @@ router.put(
   ],
   modifyEntry,
 );
+
+/* DELETE a single entry */
+router.delete('/entries/:id', deleteEntry);
 
 export default router;

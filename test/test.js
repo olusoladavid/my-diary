@@ -152,3 +152,32 @@ describe('/PUT/:id entries', () => {
       });
   });
 });
+
+describe('/DELETE/:id entries', () => {
+  it('should delete a single entry by id', (done) => {
+    const entriesLengthBeforeRequest = entries.length;
+    chai
+      .request(app)
+      .delete('/api/v1/entries/1')
+      .end((err, res) => {
+        expect(res).to.have.status(204);
+        expect(res.body).to.be.eql({});
+        expect(entries.length).to.be.eql(entriesLengthBeforeRequest - 1);
+        done();
+      });
+  });
+
+  it('should not return an entry', (done) => {
+    const entriesLengthBeforeRequest = entries.length;
+    chai
+      .request(app)
+      .delete('/api/v1/entries/0')
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('errors');
+        expect(entries.length).to.be.eql(entriesLengthBeforeRequest);
+        done();
+      });
+  });
+});
