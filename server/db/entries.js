@@ -6,6 +6,7 @@ const entries = [
     content: `After many years of pushing for a change, we finally broke through.
         This time however I was spearheading my department. We finally got around to
         start using version control.`,
+    isFavorite: true,
   },
   {
     id: 2,
@@ -14,6 +15,7 @@ const entries = [
     content: `It happened on a dusty evening. We were strolling down the park as I 
         accompanied her home. At the front of her basement, she looked deeply into my eyes 
         and came close. The message was clear. Now it's a memory.`,
+    isFavorite: false,
   },
 ];
 
