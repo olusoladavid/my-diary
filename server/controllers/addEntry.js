@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator/check';
-import entries from '../db/entries';
+import { entries, idNonce } from '../db/entries';
 
 const addEntry = (req, res) => {
   const error = validationResult(req);
@@ -7,7 +7,8 @@ const addEntry = (req, res) => {
     return res.status(400).json({ errors: error.array() });
   }
   const entry = req.body;
-  entry.id = entries.length + 1;
+  idNonce.count += 1;
+  entry.id = idNonce.count;
   entries.push(entry);
   return res.status(201).json(entry);
 };

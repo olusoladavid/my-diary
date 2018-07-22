@@ -1,4 +1,4 @@
-import entries from '../db/entries';
+import { entries } from '../db/entries';
 
 const getEntry = (req, res) => {
   const found = entries.find(entry => entry.id === Number(req.params.id));

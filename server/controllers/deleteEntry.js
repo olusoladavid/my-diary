@@ -1,4 +1,4 @@
-import entries from '../db/entries';
+import { entries } from '../db/entries';
 
 const deleteEntry = (req, res) => {
   const indexOfFound = entries.findIndex(entry => entry.id === Number(req.params.id));

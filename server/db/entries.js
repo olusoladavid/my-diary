@@ -19,4 +19,6 @@ const entries = [
   },
 ];
 
-export default entries;
+const idNonce = { count: 2 };
+
+export { entries, idNonce };

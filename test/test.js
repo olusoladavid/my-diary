@@ -1,7 +1,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../server/index';
-import entries from '../server/db/entries';
+import { entries, idNonce } from '../server/db/entries';
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -65,6 +65,7 @@ describe('/GET/:id entries', () => {
 describe('/POST entries', () => {
   it('should add a new entry to user entries', (done) => {
     const entriesLengthBeforeRequest = entries.length;
+    const idNonceBeforeRequest = Object.assign({}, idNonce);
     const sampleEntry = {
       timestamp: 153677782990,
       title: 'title',
@@ -82,6 +83,7 @@ describe('/POST entries', () => {
         expect(res.body).to.have.property('title', sampleEntry.title);
         expect(res.body).to.have.property('content', sampleEntry.content);
         expect(res.body).to.have.property('isFavorite', sampleEntry.isFavorite);
+        expect(idNonce.count).to.be.eql(idNonceBeforeRequest.count + 1);
         expect(entries.length).to.be.eql(entriesLengthBeforeRequest + 1);
         done();
       });
