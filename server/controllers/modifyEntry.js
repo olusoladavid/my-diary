@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator/check';
-import entries from '../db/entries';
+import { entries } from '../db/entries';
 
 const modifyEntry = (req, res) => {
   const error = validationResult(req);
