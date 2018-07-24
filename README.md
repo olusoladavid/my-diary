@@ -20,11 +20,10 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 
 ## Technologies
 
-- Nodejs
-- Express
-- Mocha (with Chai as assertion library)
-- Babel (ES6+ to ES5 transpilation)
-- ESLint (with Airbnb style guide)
+- Nodejs (with ExpressJS)
+- Test Driven Development (with Mocha, Chai as assertion library)
+- ES6+ Javascript (using Babel for ES6+ to ES5 transpilation)
+- Code linting (with ESLint and Airbnb style guide)
 
 ## API Endpoints
 
