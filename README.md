@@ -22,7 +22,6 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 
 - [Node.js](https://nodejs.org/)
 - [Express.js](https://expressjs.com/)
-- [PostgreSQL](https://www.postgresql.org/)
 - Javascript (ES6+)
 - CSS3
 - HTML5
