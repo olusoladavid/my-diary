@@ -18,12 +18,14 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 
 - Users can set and get daily notifications that prompt them to add an entry to their diary
 
-## Technologies
+## Tech Stack
 
-- Nodejs (with ExpressJS)
-- Test Driven Development (with Mocha, Chai as assertion library)
-- ES6+ Javascript (using Babel for ES6+ to ES5 transpilation)
-- Code linting (with ESLint and Airbnb style guide)
+- (Node.js)[https://nodejs.org/]
+- (Express.js)[https://expressjs.com/]
+- (PostgreSQL)[https://www.postgresql.org/]
+- Javascript (ES6+)
+- CSS3
+- HTML5
 
 ## API Endpoints
 
