@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,10 @@
   <title>Login | MyDiary</title>
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
   <link rel="icon" type="image/png" href="./img/favicon.png" sizes="32x32" />
 </head>
+
 <body>
   <div class="page page--is-flex page--stretches">
     <header class="header">
@@ -21,6 +23,19 @@
             MyDiary
           </a>
         </div>
+        <nav class="nav">
+          <a href="#" class="nav__open-menu js-open-menu"></a>
+          <ul class="list nav__list js-nav-list">
+            <li class="list__item">
+              <a href="#" class="nav__close-menu js-close-menu"></a>
+            </li>
+            <li class="list__item">
+              <a href="./index.html" class="link nav__link">
+                Home
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </header>
     <div class="container">
@@ -34,13 +49,16 @@
         </form>
       </div>
     </div>
-    
+
     <footer class="footer">
       <div class="container">
-        <h4> Built with &#10084; by <a class="link" href="https://twitter.com/olusola_dev">Olusola</a></h4>
+        <h4> Built with &#10084; by
+          <a class="link" href="https://twitter.com/olusola_dev">Olusola</a>
+        </h4>
       </div>
     </footer>
   </div>
   <script type="text/javascript" src="./js/main.js"></script>
 </body>
+
 </html>

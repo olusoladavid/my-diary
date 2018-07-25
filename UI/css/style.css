@@ -320,6 +320,9 @@
 .item__date .date__month {
   font-size: 11px;
 }
+.item__date .date__year {
+  font-size: 12px;
+}
 .item__caption .caption__text {
   margin: 0;
   padding: 0;
