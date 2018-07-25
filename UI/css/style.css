@@ -1,5 +1,5 @@
 .page {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   padding: 0;
   margin: 0;
   background-color: #6865f9;
@@ -78,7 +78,7 @@
   display: none;
   width: 40px;
   height: 40px;
-  background: url('../img/menu-icon.svg');
+  background: url("../img/menu-icon.svg");
 }
 .nav__close-menu {
   display: none;
@@ -87,7 +87,7 @@
   top: 10px;
   width: 30px;
   height: 30px;
-  background: url('../img/close-icon.svg');
+  background: url("../img/close-icon.svg");
   background-repeat: no-repeat;
 }
 .hero {
@@ -106,7 +106,7 @@
   color: #ffffff;
   font-size: 22px;
   line-height: 1.8;
-  font-weight: 400
+  font-weight: 400;
 }
 .feature-list {
   background-color: #ffffff;
@@ -171,18 +171,18 @@
   font-size: 1.35em;
   display: block;
   background: #6865f9;
-  padding: .75em 1em .75em 1.5em;
+  padding: 0.75em 1em 0.75em 1.5em;
   box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.05);
   margin: 0;
   font-weight: 200;
   text-align: center;
 }
-.form__input, 
+.form__input,
 .form__textarea {
   display: block;
   margin: auto auto;
   margin-bottom: 2em;
-  padding: .5em 0;
+  padding: 0.5em 0;
   border: none;
   border-bottom: 1px solid #eaeaea;
   padding-bottom: 1.25em;
@@ -196,9 +196,9 @@
   display: inline-block;
   background: #00d1b2;
   border: none;
-  padding: .5em 2em;
+  padding: 0.5em 2em;
   color: white;
-  margin-right: .5em;
+  margin-right: 0.5em;
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2);
 }
 .form__btn--submit:hover {
@@ -213,16 +213,16 @@
 }
 .form__btn--alternate {
   color: #00d1b2;
-  line-height: .5em;
+  line-height: 0.5em;
   position: relative;
   text-decoration: none;
-  font-size: .75em;
+  font-size: 0.75em;
   margin: 0;
   padding: 0;
 }
 .button--loading::after {
-  -webkit-animation: spinAround .5s infinite linear;
-  animation: spinAround .5s infinite linear;
+  -webkit-animation: spinAround 0.5s infinite linear;
+  animation: spinAround 0.5s infinite linear;
   border: 2px solid #dbdbdb;
   border-radius: 290486px;
   border-right-color: transparent;
@@ -265,8 +265,8 @@
   font-weight: normal;
 }
 .story-list__item .item__holder {
-  background: #ffffff; 
-  height:300px;
+  background: #ffffff;
+  height: 300px;
 }
 .story-list__item {
   background-color: #000000;
@@ -315,6 +315,9 @@
 }
 .item__date .date__month {
   font-size: 11px;
+}
+.item__date .date__year {
+  font-size: 12px;
 }
 .item__caption .caption__text {
   margin: 0;
@@ -383,7 +386,7 @@
   border-bottom: 8px solid #6865f9;
 }
 .profile__data {
-  margin-top: .6em;
+  margin-top: 0.6em;
   color: #81878b;
 }
 .profile__data .data__item {
@@ -399,9 +402,9 @@
 .data__item .span {
   display: block;
   text-transform: uppercase;
-  font-size: .5em;
-  margin-top: .6em;
-  font-weight:700;
+  font-size: 0.5em;
+  margin-top: 0.6em;
+  font-weight: 700;
 }
 
 .profile__title {
@@ -420,7 +423,7 @@
 }
 .profile__title .title__text {
   font-size: 1.2em;
-  margin-bottom: .5em; 
+  margin-bottom: 0.5em;
 }
 .reminder-block {
   margin: 1.5em auto 0 auto;
@@ -431,14 +434,14 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: .5em;
+  padding: 0.5em;
 }
 .switch {
   display: inline-block;
   font-size: 20px; /* 1 */
   height: 1em;
   width: 2em;
-  background: #BDB9A6;
+  background: #bdb9a6;
   border-radius: 1em;
 }
 .switch__input {
@@ -449,8 +452,8 @@
   height: 1em;
   width: 1em;
   border-radius: 1em;
-  background: #FFF;
-  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
+  background: #fff;
+  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.3);
   -webkit-transition: all 300ms;
   -moz-transition: all 300ms;
   transition: all 300ms;
@@ -462,35 +465,35 @@
   background: #6865f9;
 }
 .story {
-  margin-left:auto;
-  margin-right:auto;
+  margin-left: auto;
+  margin-right: auto;
   padding: 50px 0;
   margin-top: 50px;
   background: #ffffff;
   width: 75%;
 }
 .story__date {
-  color:#666;
-  font-size:16px;
+  color: #666;
+  font-size: 16px;
   margin-left: 5px;
-  padding-left: 50px
+  padding-left: 50px;
 }
 .story__title {
-  color:#333;
+  color: #333;
   font-weight: bold;
-  font-size:35px;
+  font-size: 35px;
   margin-top: 5px;
-  padding-left: 50px
+  padding-left: 50px;
 }
 .story__content {
-  font-szie:25px;
+  font-szie: 25px;
   line-height: 1.8em;
-  padding: 0 50px
+  padding: 0 50px;
 }
 .story__toolbar {
   position: relative;
-  height:60px;
-  padding:0 50px;
+  height: 60px;
+  padding: 0 50px;
   margin-top: 40px;
   display: flex;
   flex-direction: row;
@@ -502,60 +505,60 @@
   align-items: center;
 }
 .story__toolbar .toolbar__edit-btn {
-  cursor:pointer;
+  cursor: pointer;
   margin-right: 10px;
   margin-top: 0px;
 }
 .story__toolbar .toolbar__delete-btn {
   background-color: transparent;
-  color:#3bbfaf !important;
+  color: #3bbfaf !important;
 }
-.story__fav-icon{
+.story__fav-icon {
   margin-left: 40px;
-  height:40px;
+  height: 40px;
   display: flex;
   align-items: center;
 }
 .modal__cancel-btn {
   background-color: firebrick;
-  color:#fff;
+  color: #fff;
 }
 .icon {
-  width:25px;
-  color:#444;
-  transition: .2s ease-in;
+  width: 25px;
+  color: #444;
+  transition: 0.2s ease-in;
 }
 .icon--heart-active {
-  animation: scale_in .3s linear 1;
+  animation: scale_in 0.3s linear 1;
   color: red;
 }
 @keyframes scale_in {
-  0%{
+  0% {
     transform: scale(1);
   }
-  100%{
+  100% {
     transform: scale(1.1);
   }
 }
 .modal {
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   overflow: auto;
-  display:none;
-  width:100%;
+  display: none;
+  width: 100%;
   height: 100%;
-  position:fixed;
-  background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.7));
+  position: fixed;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
   z-index: 1;
 }
 .modal__body {
-  width:38%;
+  width: 38%;
   text-align: center;
-  margin:200px auto;
+  margin: 200px auto;
   background-color: #fff;
-  height:200px;
+  height: 200px;
   padding: 0 15px;
-  box-shadow: 2px -1px 3px 2px rgba(255,255,255,0.5);
+  box-shadow: 2px -1px 3px 2px rgba(255, 255, 255, 0.5);
 }
 .modal__text {
   padding-top: 80px;
@@ -631,7 +634,7 @@
   }
   .story-list {
     padding: 40px 0px 40px 5%;
-    width: 75%
+    width: 75%;
   }
   .story-list__title {
     margin-top: 50px;
@@ -641,13 +644,13 @@
   }
   .story__edit-btn,
   .story__delete-btn {
-    height:30px;
-    width:80px;
+    height: 30px;
+    width: 80px;
   }
   .icon {
     margin-top: 3px;
   }
   .modal__body {
-    width:80%;
+    width: 80%;
   }
 }

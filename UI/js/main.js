@@ -4,11 +4,11 @@ const closeMenuButton = document.querySelector('.js-close-menu');
 const openMenuButton = document.querySelector('.js-open-menu');
 
 const hideSideBar = (e) => {
-	document.querySelector('nav ul').style.display = "none";	
+	document.querySelector('.js-nav-list').style.display = "none";	
 };
 
 const showSideBar = (e) => {
-	document.querySelector('nav ul').style.display = "block";	
+	document.querySelector('.js-nav-list').style.display = "block";	
 };
 
 const toggleSideBar = (e) => {
