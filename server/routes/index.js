@@ -23,10 +23,10 @@ router.get('/entries/:id', getEntry);
 router.post(
   '/entries',
   [
-    check('timestamp').isInt(),
     check('title').isString(),
     check('content').isString(),
     check('isFavorite').isBoolean(),
+    check('isPublic').isBoolean(),
   ],
   addEntry,
 );
