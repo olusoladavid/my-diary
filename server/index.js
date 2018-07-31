@@ -4,6 +4,10 @@ import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import router from './routes/index';
+import createTables from './db/createTables';
+
+// create database tables if they are not existing yet
+createTables();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
