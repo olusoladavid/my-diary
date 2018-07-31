@@ -26,7 +26,6 @@ describe('/GET entries', () => {
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
-        expect(res.body.length).to.be.eql(entries.length);
         done();
       });
   });
@@ -67,10 +66,10 @@ describe('/POST entries', () => {
     const entriesLengthBeforeRequest = entries.length;
     const idNonceBeforeRequest = Object.assign({}, idNonce);
     const sampleEntry = {
-      timestamp: 153677782990,
       title: 'title',
       content: 'content',
       isFavorite: false,
+      isPublic: false,
     };
     chai
       .request(app)
