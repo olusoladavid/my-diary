@@ -1,10 +1,6 @@
 import express from 'express';
 import { check } from 'express-validator/check';
-import getAllEntries from '../controllers/getAllEntries';
-import getEntry from '../controllers/getEntry';
-import addEntry from '../controllers/addEntry';
-import modifyEntry from '../controllers/modifyEntry';
-import deleteEntry from '../controllers/deleteEntry';
+import userController from '../controllers/userController';
 
 const router = express.Router();
 
@@ -13,46 +9,23 @@ router.get('/', (req, res) => {
   res.json({ MyDiary: 'API v1' });
 });
 
-/* GET all user entries */
-router.get('/entries', getAllEntries);
-
-/* GET a single entry */
-router.get('/entries/:id', getEntry);
-
-/* POST a new entry */
+/* Create a new user */
 router.post(
-  '/entries',
+  '/auth/signup',
   [
-    check('title').isString(),
-    check('content').isString(),
-    check('isFavorite').isBoolean(),
-    check('isPublic').isBoolean(),
-  ],
-  addEntry,
-);
-
-/* PUT new data in existing entry */
-router.put(
-  '/entries/:id',
-  [
-    check('timestamp')
+    check('email')
+      .isEmail()
+      .withMessage('Your email is invalid'),
+    check('password')
+      .isString()
+      .withMessage('Your password is invalid')
+      .isLength({ min: 5 })
+      .withMessage('Your password should contain minimum of 5 characters')
       .not()
-      .exists()
-      .withMessage('Timestamp cannot be modified'),
-    check('title')
-      .isString()
-      .optional(),
-    check('content')
-      .isString()
-      .optional(),
-    check('isFavorite')
-      .isBoolean()
-      .optional(),
+      .contains(' ')
+      .withMessage('Your password contains illegal characters'),
   ],
-  modifyEntry,
+  userController.createUser,
 );
-
-/* DELETE a single entry */
-router.delete('/entries/:id', deleteEntry);
 
 export default router;
