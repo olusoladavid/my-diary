@@ -28,4 +28,12 @@ router.post(
   userController.createUser,
 );
 
+/* Login user */
+router.post('/auth/login',
+  [
+    check('email').isEmail().withMessage('Your email is invalid'),
+    check('password').isString().withMessage('Your password is invalid'),
+  ],
+  userController.loginUser);
+
 export default router;
