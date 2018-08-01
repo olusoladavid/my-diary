@@ -12,4 +12,9 @@ router.get('/', (req, res) => {
 /* Create a new user */
 router.post('/auth/signup', validate.signupInputs, userController.createUser);
 
+/* Login user */
+router.post('/auth/login',
+  validate.loginInputs,
+  userController.loginUser);
+
 export default router;

@@ -82,3 +82,45 @@ describe('/POST /auth/signup', () => {
       });
   });
 });
+
+describe('/POST /auth/login', () => {
+  it('should return 200 with an auth token when user successfully logs in', (done) => {
+    chai
+      .request(app)
+      .post('/api/v1/auth/login')
+      .send(sampleData.validUser)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('token');
+        ({ token } = res.body.token);
+        done();
+      });
+  });
+
+  it('should return 400 bad request when a user tries to login with invalid credentials', (done) => {
+    chai
+      .request(app)
+      .post('/api/v1/auth/login')
+      .send(sampleData.invalidUser)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 422 unprocessable request when a user tries to login with the valid but wrong credentials', (done) => {
+    chai
+      .request(app)
+      .post('/api/v1/auth/login')
+      .send(sampleData.incorrectUser)
+      .end((err, res) => {
+        expect(res).to.have.status(422);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('error');
+        done();
+      });
+  });
+});

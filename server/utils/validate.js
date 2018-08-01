@@ -14,6 +14,14 @@ const validate = {
       .contains(' ')
       .withMessage('Your password contains illegal characters'),
   ],
+  loginInputs: [
+    check('email')
+      .isEmail()
+      .withMessage('Your email is invalid'),
+    check('password')
+      .isString()
+      .withMessage('Your password is invalid'),
+  ],
 };
 
 export default validate;
