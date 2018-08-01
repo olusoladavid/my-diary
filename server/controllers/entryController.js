@@ -59,6 +59,25 @@ class entryController {
       },
     );
   }
+
+  static getEntry(req, res) {
+    query(
+      `SELECT entries.id, entries.title, entries.content, entries.created_on, entries.is_favorite FROM entries 
+    INNER JOIN users 
+    ON entries.user_id = users.id 
+    WHERE users.email=$1 AND entries.id=$2`, [req.authorizedUser.email, req.params.id],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+        }
+        if (!result.rowCount) {
+          return res.status(404).json({ error: { message: 'Entry not found' } });
+        }
+        return res.status(200).json(result.rows[0]);
+      },
+    );
+  }
 }
 
 export default entryController;
