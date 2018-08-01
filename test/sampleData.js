@@ -15,19 +15,19 @@ const sampleData = {
   validEntry: {
     title: 'Cool Title',
     content: 'Awesome content',
-    isFavorite: true,
+    is_favorite: true,
   },
   invalidEntry: {
-    title: 5, // title should be a string
+    title: '5',
     content: 'Awesome Content',
-    isFavorite: 'false', // isFavorite should be boolean
+    is_favorite: 5, // isFavorite should be boolean
   },
   incompleteValidEntry: {
     title: 'Cool Title',
     content: 'Lovely Content',
   },
   incompleteInvalidEntry: {
-    isFavorite: 'true',
+    is_favorite: 'true',
   },
   invalidEntryId: 0,
 };

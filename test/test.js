@@ -167,3 +167,67 @@ describe('/GET entries', () => {
       });
   });
 });
+
+describe('/POST entries', () => {
+  it('should create a new entry when passed valid data and valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .post('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.validEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.all.keys('id', 'created_on', 'title', 'content', 'is_favorite');
+        // cache entry id for future requests
+        cachedEntry = res.body;
+        done();
+      });
+  });
+
+  it('should return 400 bad request error when passed invalid data and valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .post('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.invalidEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 401 unauthorized error when passed valid data with invalid or expired token', (done) => {
+    chai
+      .request(app)
+      .post('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(sampleData.invalidToken))
+      .send(sampleData.validEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+});
+
+describe('/GET entries', () => {
+  it('should not return an empty array of entries after user adds an entry and sends a valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('array');
+        expect(res.body).to.have.length.greaterThan(0);
+        done();
+      });
+  });
+});

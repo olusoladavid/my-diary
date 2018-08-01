@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator/check';
 import { query } from '../db/index';
 
 class entryController {
@@ -21,6 +22,33 @@ class entryController {
           return res.status(500).json({ error: { message: 'An error occurred on the server' } });
         }
         return res.status(200).json(result.rows);
+      },
+    );
+  }
+
+  static addEntry(req, res) {
+    // validate entry fields - 400
+    const errorsFound = validationResult(req);
+    if (!errorsFound.isEmpty()) {
+      return res.status(400).json({ error: { message: errorsFound.array()[0].msg } });
+    }
+
+    const entry = {
+      title: req.body.title,
+      content: req.body.content,
+      isFavorite: req.body.is_favorite,
+    };
+    // add entry to database
+    query(
+      `INSERT INTO entries (user_id, title, content, is_favorite) 
+      VALUES ((SELECT id from users WHERE email=$1), $2, $3, $4) RETURNING id, title, content, is_favorite, created_on`,
+      [req.authorizedUser.email, entry.title, entry.content, entry.isFavorite],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+        }
+        return res.status(201).json(result.rows[0]);
       },
     );
   }

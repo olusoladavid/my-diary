@@ -22,6 +22,17 @@ const validate = {
       .isString()
       .withMessage('Your password is invalid'),
   ],
+  newEntry: [
+    check('title')
+      .isString()
+      .withMessage('Title should be a string'),
+    check('content')
+      .isString()
+      .withMessage('Content should be a string'),
+    check('is_favorite')
+      .isBoolean()
+      .withMessage('isFavorite property of a story should be boolean'),
+  ],
 };
 
 export default validate;
