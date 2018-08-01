@@ -93,7 +93,8 @@ describe('/POST /auth/login', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('token');
-        ({ token } = res.body.token);
+        token = res.body.token;
+        console.log(token);
         done();
       });
   });
@@ -120,6 +121,48 @@ describe('/POST /auth/login', () => {
         expect(res).to.have.status(422);
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('error');
+        done();
+      });
+  });
+});
+
+describe('/GET entries', () => {
+  it('should return all user entries when passed a valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('array');
+        expect(res.body.length).to.be.equals(0);
+        done();
+      });
+  });
+
+  it('should return 401 unauthorized error along with error object when passed an invalid or expired token', (done) => {
+    chai
+      .request(app)
+      .get('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(sampleData.invalidToken))
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 401 unauthorized error along with error object when passed no token', (done) => {
+    chai
+      .request(app)
+      .get('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(''))
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
         done();
       });
   });

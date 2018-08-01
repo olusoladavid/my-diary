@@ -1,6 +1,8 @@
 import express from 'express';
 import { check } from 'express-validator/check';
 import userController from '../controllers/userController';
+import entryController from '../controllers/entryController';
+import verifyToken from '../utils/verifyToken';
 
 const router = express.Router();
 
@@ -35,5 +37,8 @@ router.post('/auth/login',
     check('password').isString().withMessage('Your password is invalid'),
   ],
   userController.loginUser);
+
+/* GET all user entries */
+router.get('/entries', verifyToken, entryController.getAllEntries);
 
 export default router;
