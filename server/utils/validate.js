@@ -33,6 +33,7 @@ const validate = {
       .isBoolean()
       .withMessage('isFavorite property of a story should be boolean'),
   ],
+  isNumber: number => !Number.isNaN(Number(number)),
 };
 
 export default validate;
