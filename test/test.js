@@ -94,7 +94,6 @@ describe('/POST /auth/login', () => {
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('token');
         token = res.body.token;
-        console.log(token);
         done();
       });
   });
@@ -135,8 +134,8 @@ describe('/GET entries', () => {
       .set('Authorization', makeAuthHeader(token))
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('array');
-        expect(res.body.length).to.be.equals(0);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('entries');
         done();
       });
   });
