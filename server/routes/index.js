@@ -14,10 +14,7 @@ router.post('/auth/signup', validate.signupInputs, userController.createUser);
 
 /* Login user */
 router.post('/auth/login',
-  [
-    check('email').isEmail().withMessage('Your email is invalid'),
-    check('password').isString().withMessage('Your password is invalid'),
-  ],
+  validate.loginInputs,
   userController.loginUser);
 
 export default router;
