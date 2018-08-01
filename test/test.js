@@ -224,8 +224,9 @@ describe('/GET entries', () => {
       .set('Authorization', makeAuthHeader(token))
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('array');
-        expect(res.body).to.have.length.greaterThan(0);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('entries');
+        expect(res.body.entries).to.have.length.greaterThan(0);
         done();
       });
   });
