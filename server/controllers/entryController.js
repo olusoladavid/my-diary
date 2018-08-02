@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator/check';
 import { query } from '../db/index';
 import validate from '../utils/validate';
+import queries from '../db/queries';
 
 class entryController {
   /**
@@ -19,9 +20,7 @@ class entryController {
     page = validate.isNumber(page) ? page : 0;
     // get entries
     query(
-      `SELECT entries.id, entries.title, entries.content, entries.created_on, entries.updated_on, 
-        entries.is_favorite FROM entries INNER JOIN users ON entries.user_id=users.id WHERE users.email=$1 
-        LIMIT $2 OFFSET $3`,
+      queries.getAllEntries,
       [req.authorizedUser.email, limit, page * limit],
       (err, result) => {
         if (err) {
@@ -56,8 +55,7 @@ class entryController {
     };
     // add entry to database
     query(
-      `INSERT INTO entries (user_id, title, content, is_favorite) 
-      VALUES ((SELECT id from users WHERE email=$1), $2, $3, $4) RETURNING id, title, content, is_favorite, created_on`,
+      queries.insertOneEntry,
       [req.authorizedUser.email, entry.title, entry.content, entry.isFavorite],
       (err, result) => {
         if (err) {
@@ -79,10 +77,7 @@ class entryController {
    */
   static getEntry(req, res) {
     query(
-      `SELECT entries.id, entries.title, entries.content, entries.created_on, entries.is_favorite FROM entries 
-    INNER JOIN users 
-    ON entries.user_id = users.id 
-    WHERE users.email=$1 AND entries.id=$2`, [req.authorizedUser.email, req.params.id],
+      queries.getOneEntry, [req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
           console.log(err);
@@ -121,10 +116,7 @@ class entryController {
 
     // check if entry is already older than a day
     query(
-      `SELECT entries.created_on FROM entries 
-    INNER JOIN users 
-    ON entries.user_id = users.id 
-    WHERE users.email=$1 AND entries.id=$2`, [req.authorizedUser.email, req.params.id],
+      queries.getEntryCreationDate, [req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
           console.log(err);
@@ -144,13 +136,7 @@ class entryController {
     );
     // add entry to database
     query(
-      `UPDATE entries SET 
-      title = COALESCE($1, title), content = COALESCE($2, content),
-      is_favorite = COALESCE($3, is_favorite) 
-      FROM users
-      WHERE entries.user_id=users.id
-      AND users.email=$4
-      AND entries.id=$5 RETURNING entries.id, entries.title, entries.content, entries.is_favorite, entries.created_on`,
+      queries.updateOneEntry,
       [title, content, isFavorite, req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
@@ -172,11 +158,7 @@ class entryController {
    */
   static deleteEntry(req, res) {
     query(
-      `DELETE FROM entries 
-      USING users 
-      WHERE entries.user_id=users.id 
-      AND users.email=$1 
-      AND entries.id=$2`, [req.authorizedUser.email, req.params.id],
+      queries.deleteOneEntry, [req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
           console.log(err);
