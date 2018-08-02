@@ -29,4 +29,8 @@ router.get('/entries/:id', verifyToken, entryController.getEntry);
 /* PUT new data in existing entry */
 router.put('/entries/:id', verifyToken, validate.modifyEntry, entryController.modifyEntry);
 
+/* DELETE a single entry */
+router.delete('/entries/:id', verifyToken, entryController.deleteEntry);
+
+
 export default router;

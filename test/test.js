@@ -333,3 +333,44 @@ describe('/PUT entries', () => {
       });
   });
 });
+
+describe('/DELETE/:id entries', () => {
+  it('should return 401 unauthorized error when passed an invalid or expired token', (done) => {
+    chai
+      .request(app)
+      .delete(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(sampleData.invalidToken))
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should delete a single user entry with specified existing id when passed a valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .delete(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(204);
+        done();
+      });
+  });
+
+  it('should return a 404 not found error when passed an invalid entry id and a valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .delete(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+});
