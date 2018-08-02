@@ -231,3 +231,45 @@ describe('/GET entries', () => {
       });
   });
 });
+
+describe('/GET/:id entries', () => {
+  it('should return single user entry with specified existing id when passed a valid token', (done) => {
+    chai
+      .request(app)
+      .get(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.eql(cachedEntry);
+        done();
+      });
+  });
+
+  it('should return a 404 not found error when passed an invalid entry id and a valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 401 unauthorized error when passed an invalid or expired token', (done) => {
+    chai
+      .request(app)
+      .get(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(sampleData.invalidToken))
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+});

@@ -23,4 +23,7 @@ router.get('/entries', verifyToken, entryController.getAllEntries);
 /* POST a new entry */
 router.post('/entries', verifyToken, validate.newEntry, entryController.addEntry);
 
+/* GET a single entry */
+router.get('/entries/:id', verifyToken, entryController.getEntry);
+
 export default router;
