@@ -273,3 +273,63 @@ describe('/GET/:id entries', () => {
       });
   });
 });
+
+describe('/PUT entries', () => {
+  it('should modify an existing entry when passed valid id, data and token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .put(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.incompleteValidEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.eql(Object.assign(cachedEntry, sampleData.incompleteValidEntry));
+        done();
+      });
+  });
+
+  it('should return 400 bad request error when passed invalid data and valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .put(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.invalidEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 401 unauthorized error when passed valid data with invalid or expired token', (done) => {
+    chai
+      .request(app)
+      .put(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(sampleData.invalidToken))
+      .send(sampleData.validEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 404 not found error when passed valid data, valid token but invalid id', (done) => {
+    chai
+      .request(app)
+      .put(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.validEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+});

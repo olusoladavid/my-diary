@@ -34,6 +34,18 @@ const validate = {
       .withMessage('isFavorite property of a story should be boolean'),
   ],
   isNumber: number => !Number.isNaN(Number(number)),
+  modifyEntry: [
+    check('title')
+      .isString()
+      .optional(),
+    check('content')
+      .isString()
+      .optional(),
+    check('is_favorite')
+      .isBoolean()
+      .optional(),
+  ],
+  booleanOrNull: bool => (typeof bool === 'undefined' ? null : bool),
 };
 
 export default validate;
