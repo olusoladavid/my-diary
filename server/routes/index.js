@@ -32,5 +32,7 @@ router.put('/entries/:id', verifyToken, validate.modifyEntry, entryController.mo
 /* DELETE a single entry */
 router.delete('/entries/:id', verifyToken, entryController.deleteEntry);
 
+/* GET user profile */
+router.get('/profile', verifyToken, userController.getProfile);
 
 export default router;
