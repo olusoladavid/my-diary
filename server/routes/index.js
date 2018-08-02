@@ -1,5 +1,7 @@
 import express from 'express';
 import userController from '../controllers/userController';
+import entryController from '../controllers/entryController';
+import verifyToken from '../utils/verifyToken';
 import validate from '../utils/validate';
 
 const router = express.Router();
@@ -16,5 +18,8 @@ router.post('/auth/signup', validate.signupInputs, userController.createUser);
 router.post('/auth/login',
   validate.loginInputs,
   userController.loginUser);
+
+/* GET all user entries */
+router.get('/entries', verifyToken, entryController.getAllEntries);
 
 export default router;

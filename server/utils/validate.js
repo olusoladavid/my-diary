@@ -22,6 +22,7 @@ const validate = {
       .isString()
       .withMessage('Your password is invalid'),
   ],
+  isNumber: number => !Number.isNaN(Number(number)),
 };
 
 export default validate;
