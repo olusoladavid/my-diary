@@ -26,4 +26,7 @@ router.post('/entries', verifyToken, validate.newEntry, entryController.addEntry
 /* GET a single entry */
 router.get('/entries/:id', verifyToken, entryController.getEntry);
 
+/* PUT new data in existing entry */
+router.put('/entries/:id', verifyToken, validate.modifyEntry, entryController.modifyEntry);
+
 export default router;
