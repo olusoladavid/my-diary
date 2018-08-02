@@ -161,6 +161,34 @@ class entryController {
       },
     );
   }
+
+  /**
+   * @description Deletes a single user entry by id
+   *
+   * @static
+   * @param {*} req - Request object with param 'id'
+   * @param {*} res - Response object
+   * @memberof entryController
+   */
+  static deleteEntry(req, res) {
+    query(
+      `DELETE FROM entries 
+      USING users 
+      WHERE entries.user_id=users.id 
+      AND users.email=$1 
+      AND entries.id=$2`, [req.authorizedUser.email, req.params.id],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+        }
+        if (!result.rowCount) {
+          return res.status(404).json({ error: { message: 'Entry not found' } });
+        }
+        return res.status(204).json();
+      },
+    );
+  }
 }
 
 export default entryController;
