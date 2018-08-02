@@ -97,6 +97,31 @@ class userController {
       });
     });
   }
+
+  /**
+   * @description Fetches user profile
+   *
+   * @static
+   * @param {*} req - Request object
+   * @param {*} res - Response object
+   * @memberof userController
+   */
+  static getProfile(req, res) {
+    query(
+      `SELECT COUNT(*) FROM entries 
+    INNER JOIN users 
+    ON entries.user_id = users.id 
+    WHERE users.email=$1`, [req.authorizedUser.email],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+        }
+        console.log(result.rows);
+        return res.status(200).json({ email: req.authorizedUser.email, entriesCount: result.rows[0].count });
+      },
+    );
+  }
 }
 
 export default userController;
