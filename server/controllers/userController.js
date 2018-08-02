@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator/check';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { query } from '../db/index';
+import queries from '../db/queries';
 
 
 class userController {
@@ -25,7 +26,7 @@ class userController {
     }
 
     // check if email already exists - 409
-    query('SELECT * FROM users WHERE email=$1', [email], (qErr, user) => {
+    query(queries.getOneUser, [email], (qErr, user) => {
       if (qErr) {
         return res.status(500).json({ error: { message: 'An error occurred on the server.' } });
       }
@@ -40,7 +41,7 @@ class userController {
         }
 
         // insert new user into table, returning data
-        query('INSERT INTO users(email, password) VALUES($1, $2) RETURNING *', [email, hash], (qErr2, newUser) => {
+        query(queries.insertOneUser, [email, hash], (qErr2, newUser) => {
           if (qErr2) {
             return res.status(500).json({ error: { message: 'An error occurred on the server.' } });
           }
@@ -76,7 +77,7 @@ class userController {
       return res.status(400).json({ error: { message: errorsFound.array()[0].msg } });
     }
     // fetch user
-    query('SELECT * FROM users WHERE email=$1', [email], (qErr, userData) => {
+    query(queries.getOneUser, [email], (qErr, userData) => {
       if (qErr) {
         return res.status(404).json({ error: { message: 'An error occurred on the server.' } });
       }
@@ -107,11 +108,7 @@ class userController {
    * @memberof userController
    */
   static getProfile(req, res) {
-    query(
-      `SELECT COUNT(*) FROM entries 
-    INNER JOIN users 
-    ON entries.user_id = users.id 
-    WHERE users.email=$1`, [req.authorizedUser.email],
+    query(queries.getEntriesCount, [req.authorizedUser.email],
       (err, result) => {
         if (err) {
           console.log(err);
