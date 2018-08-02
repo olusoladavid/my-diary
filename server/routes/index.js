@@ -15,11 +15,12 @@ router.get('/', (req, res) => {
 router.post('/auth/signup', validate.signupInputs, userController.createUser);
 
 /* Login user */
-router.post('/auth/login',
-  validate.loginInputs,
-  userController.loginUser);
+router.post('/auth/login', validate.loginInputs, userController.loginUser);
 
 /* GET all user entries */
 router.get('/entries', verifyToken, entryController.getAllEntries);
+
+/* POST a new entry */
+router.post('/entries', verifyToken, validate.newEntry, entryController.addEntry);
 
 export default router;
