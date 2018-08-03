@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/olusoladavid/my-diary.svg?branch=ft-rest-api-endpoints-159069640)](https://travis-ci.org/olusoladavid/my-diary)
-[![Coverage Status](https://coveralls.io/repos/github/olusoladavid/my-diary/badge.svg?branch=develop)](https://coveralls.io/github/olusoladavid/my-diary?branch=ft-rest-api-endpoints-159069640)
+[![Coverage Status](https://coveralls.io/repos/github/olusoladavid/my-diary/badge.svg?branch=develop)](https://coveralls.io/github/olusoladavid/my-diary?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/28ee352fbbd498a8cafd/maintainability)](https://codeclimate.com/github/olusoladavid/my-diary/maintainability)
 
 # my-diary
@@ -22,6 +22,7 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 
 - [Node.js](https://nodejs.org/)
 - [Express.js](https://expressjs.com/)
+- [PostgreSQL](https://postgresql.org) 
 - Javascript (ES6+)
 - CSS3
 - HTML5
@@ -30,6 +31,9 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 
 | Endpoint                    | Functionality        |
 | --------------------------- | -------------------- |
+| POST `/auth/signup`         | Register a user      |
+| POST `/auth/login`          | Login a user         |
+| GET `/profile`              | Fetch user profile   |
 | GET `/entries`              | Fetch all entries    |
 | GET `/entries/<entryId>`    | Fetch a single entry |
 | POST `/entries`             | Create an entry      |
@@ -39,8 +43,7 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 ## Build Setup
 
 ```
-clone repo and cd into directory
-
+#clone repo and cd into directory
 git clone https://github.com/olusoladavid/my-diary.git
 ```
 
