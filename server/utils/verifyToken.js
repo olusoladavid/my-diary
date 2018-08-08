@@ -6,9 +6,10 @@ dotenv.config();
 const verifyToken = (req, res, next) => {
   try {
     if (!req.headers.authorization) {
-      return res
+      res
         .status(401)
         .json({ error: { message: 'Authorization failed. Please provide a token' } });
+      return;
     }
     const token = req.headers.authorization.split(' ')[1];
     const authorizedUser = jwt.verify(token, process.env.SECRET_KEY);

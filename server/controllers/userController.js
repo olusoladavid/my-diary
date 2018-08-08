@@ -22,28 +22,33 @@ class userController {
     // validate email and password - 400
     const errorsFound = validationResult(req);
     if (!errorsFound.isEmpty()) {
-      return res.status(400).json({ error: { message: errorsFound.array()[0].msg } });
+      res.status(400).json({ error: { message: errorsFound.array() } });
+      return;
     }
 
     // check if email already exists - 409
     query(queries.getOneUser, [email], (qErr, user) => {
       if (qErr) {
-        return res.status(500).json({ error: { message: 'An error occurred on the server.' } });
+        res.status(500).json({ error: { message: 'An error occurred on the server.' } });
+        return;
       }
       if (user.rows.length) {
-        return res.status(409).json({ error: { message: 'User already exists. Please login.' } });
+        res.status(409).json({ error: { message: 'User already exists. Please login.' } });
+        return;
       }
 
       // hash the password
       bcrypt.hash(password, 5, (bErr, hash) => {
         if (bErr) {
-          return res.status(500).json({ error: { message: 'An error occurred on the server.' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server.' } });
+          return;
         }
 
         // insert new user into table, returning data
         query(queries.insertOneUser, [email, hash], (qErr2, newUser) => {
           if (qErr2) {
-            return res.status(500).json({ error: { message: 'An error occurred on the server.' } });
+            res.status(500).json({ error: { message: 'An error occurred on the server.' } });
+            return;
           }
 
           // create token using new data and sign with password hash+lastLogin+lastLogout
@@ -52,8 +57,8 @@ class userController {
           const data = { email: userInfo.email, createdOn: userInfo.created_on };
           const token = jwt.sign(data, jwtSecret, { expiresIn: '2h' });
 
-          // return signed token - 201
-          return res.status(201).json({ token });
+          // signed token - 201
+          res.status(201).json({ token });
         });
       });
     });
@@ -74,19 +79,25 @@ class userController {
     // validate email and password - 400
     const errorsFound = validationResult(req);
     if (!errorsFound.isEmpty()) {
-      return res.status(400).json({ error: { message: errorsFound.array()[0].msg } });
+      res.status(400).json({ error: { message: errorsFound.array() } });
+      return;
     }
     // fetch user
     query(queries.getOneUser, [email], (qErr, userData) => {
       if (qErr) {
-        return res.status(404).json({ error: { message: 'An error occurred on the server.' } });
+        res.status(404).json({ error: { message: 'An error occurred on the server.' } });
+        return;
       }
       // if error in fetch, user does not exist - 404
-      if (!userData.rows.length) return res.status(404).json({ error: { message: 'User does not exist' } });
+      if (!userData.rows.length) {
+        res.status(422).json({ error: { message: 'Email or Password is incorrect' } });
+        return;
+      }
       // check password
       bcrypt.compare(password, userData.rows[0].password, (bErr, valid) => {
         if (!valid) {
-          return res.status(422).json({ error: { message: 'Email or Password is incorrect' } });
+          res.status(422).json({ error: { message: 'Email or Password is incorrect' } });
+          return;
         }
         // create token
         const jwtSecret = process.env.SECRET_KEY;
@@ -94,7 +105,7 @@ class userController {
           email: userData.rows[0].email, createdOn: userData.rows[0].created_on,
         }, jwtSecret);
         // return signed token - 200
-        return res.status(200).json({ token });
+        res.status(200).json({ token });
       });
     });
   }
@@ -111,13 +122,14 @@ class userController {
     query(queries.getEntriesCount, [req.authorizedUser.email],
       (err, result) => {
         if (err) {
-          console.log(err);
-          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          return;
         }
-        console.log(result.rows);
-        return res.status(200).json({ email: req.authorizedUser.email, entriesCount: result.rows[0].count });
-      },
-    );
+        res.status(200).json({
+          email: req.authorizedUser.email,
+          entriesCount: result.rows[0].count,
+        });
+      });
   }
 }
 

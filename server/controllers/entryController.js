@@ -24,10 +24,10 @@ class entryController {
       [req.authorizedUser.email, limit, page * limit],
       (err, result) => {
         if (err) {
-          console.log(err);
-          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          return;
         }
-        return res.status(200).json({ entries: result.rows, meta: { limit, page } });
+        res.status(200).json({ entries: result.rows, meta: { limit, page } });
       },
     );
   }
@@ -45,24 +45,22 @@ class entryController {
     // validate entry fields - 400
     const errorsFound = validationResult(req);
     if (!errorsFound.isEmpty()) {
-      return res.status(400).json({ error: { message: errorsFound.array()[0].msg } });
+      res.status(400).json({ error: { message: errorsFound.array() } });
+      return;
     }
 
-    const entry = {
-      title: req.body.title,
-      content: req.body.content,
-      isFavorite: req.body.is_favorite,
-    };
+    const { title, content, is_favorite: isFavorite } = req.body;
+
     // add entry to database
     query(
       queries.insertOneEntry,
-      [req.authorizedUser.email, entry.title, entry.content, entry.isFavorite],
+      [req.authorizedUser.email, title, content, isFavorite],
       (err, result) => {
         if (err) {
-          console.log(err);
-          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          return;
         }
-        return res.status(201).json(result.rows[0]);
+        res.status(201).json(result.rows[0]);
       },
     );
   }
@@ -80,13 +78,14 @@ class entryController {
       queries.getOneEntry, [req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
-          console.log(err);
-          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          return;
         }
         if (!result.rowCount) {
-          return res.status(404).json({ error: { message: 'Entry not found' } });
+          res.status(404).json({ error: { message: 'Entry not found' } });
+          return;
         }
-        return res.status(200).json(result.rows[0]);
+        res.status(200).json(result.rows[0]);
       },
     );
   }
@@ -104,7 +103,8 @@ class entryController {
     // validate entry fields - 400
     const errorsFound = validationResult(req);
     if (!errorsFound.isEmpty()) {
-      return res.status(400).json({ error: { message: errorsFound.array()[0].msg } });
+      res.status(400).json({ error: { message: errorsFound.array() } });
+      return;
     }
 
     // deconstruct request body
@@ -119,16 +119,17 @@ class entryController {
       queries.getEntryCreationDate, [req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
-          console.log(err);
-          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          return;
         }
         if (!result.rowCount) {
-          return res.status(404).json({ error: { message: 'Entry not found' } });
+          res.status(404).json({ error: { message: 'Entry not found' } });
+          return;
         }
         const createdOn = new Date(result.rows[0].created_on).getTime();
         const hoursSinceCreated = (Date.now() - createdOn) / (1000 * 60 * 60);
         if (hoursSinceCreated > 24) {
-          return res.status(403).json({
+          res.status(403).json({
             error: { message: 'Cannot update entry after 24 hours' },
           });
         }
@@ -140,10 +141,10 @@ class entryController {
       [title, content, isFavorite, req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
-          console.log(err);
-          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          return;
         }
-        return res.status(200).json(result.rows[0]);
+        res.status(200).json(result.rows[0]);
       },
     );
   }
@@ -161,13 +162,14 @@ class entryController {
       queries.deleteOneEntry, [req.authorizedUser.email, req.params.id],
       (err, result) => {
         if (err) {
-          console.log(err);
-          return res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          res.status(500).json({ error: { message: 'An error occurred on the server' } });
+          return;
         }
         if (!result.rowCount) {
-          return res.status(404).json({ error: { message: 'Entry not found' } });
+          res.status(404).json({ error: { message: 'Entry not found' } });
+          return;
         }
-        return res.status(204).json();
+        res.sendStatus(204);
       },
     );
   }
