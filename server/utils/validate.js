@@ -13,8 +13,14 @@ class validate {
 validate.signupInputs = [
   check('email')
     .isEmail()
-    .withMessage('Your email is invalid'),
+    .withMessage('Your email is invalid')
+    .not()
+    .isEmpty()
+    .withMessage('Your email should not be empty'),
   check('password')
+    .not()
+    .isEmpty()
+    .withMessage('Your password should not be empty')
     .isString()
     .withMessage('Your password is invalid')
     .isLength({ min: 5 })
@@ -27,22 +33,34 @@ validate.signupInputs = [
 validate.loginInputs = [
   check('email')
     .isEmail()
-    .withMessage('Your email is invalid'),
+    .withMessage('Your email is invalid')
+    .not()
+    .isEmpty()
+    .withMessage('Your email should not be empty'),
   check('password')
     .isString()
-    .withMessage('Your password is invalid'),
+    .withMessage('Your password is invalid')
+    .not()
+    .isEmpty()
+    .withMessage('Your password should not be empty'),
 ];
 
 validate.newEntry = [
   check('title')
     .isString()
-    .withMessage('Title should be a string'),
+    .withMessage('Title should be a string')
+    .not()
+    .isEmpty()
+    .withMessage('Title should not be empty'),
   check('content')
     .isString()
-    .withMessage('Content should be a string'),
+    .withMessage('Content should be a string')
+    .not()
+    .isEmpty()
+    .withMessage('Content should not be empty'),
   check('is_favorite')
     .isBoolean()
-    .withMessage('isFavorite property of a story should be boolean'),
+    .withMessage('Story should either be favorited or not'),
 ];
 
 validate.modifyEntry = [

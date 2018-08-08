@@ -15,13 +15,13 @@ const makeAuthHeader = authToken => `Bearer ${authToken}`;
 
 before(() => {
   // remove all entries
-  query('TRUNCATE TABLE entries CASCADE', (err, res) => {
+  query('TRUNCATE TABLE entries CASCADE', (err) => {
     if (err) {
       console.log(err);
     }
   });
   // remove all users
-  query('TRUNCATE TABLE users CASCADE', (err, res) => {
+  query('TRUNCATE TABLE users CASCADE', (err) => {
     if (err) {
       console.log(err);
     }
@@ -93,7 +93,7 @@ describe('/POST /auth/login', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('token');
-        token = res.body.token;
+        ({ token } = res.body);
         done();
       });
   });
@@ -116,6 +116,19 @@ describe('/POST /auth/login', () => {
       .request(app)
       .post('/api/v1/auth/login')
       .send(sampleData.incorrectUser)
+      .end((err, res) => {
+        expect(res).to.have.status(422);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 422 unprocessable request when a user tries to login with the valid but wrong credentials', (done) => {
+    chai
+      .request(app)
+      .post('/api/v1/auth/login')
+      .send(sampleData.incorrectUser2)
       .end((err, res) => {
         expect(res).to.have.status(422);
         expect(res.body).to.be.an('object');
@@ -157,7 +170,7 @@ describe('/GET entries', () => {
     chai
       .request(app)
       .get('/api/v1/entries')
-      .set('Authorization', makeAuthHeader(''))
+      .set('Authorization', null)
       .end((err, res) => {
         expect(res).to.have.status(401);
         expect(res.body).to.be.an('object');
@@ -205,6 +218,20 @@ describe('/POST entries', () => {
       .request(app)
       .post('/api/v1/entries')
       .set('Authorization', makeAuthHeader(sampleData.invalidToken))
+      .send(sampleData.validEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 401 unauthorized error when passed valid data with no token', (done) => {
+    chai
+      .request(app)
+      .post('/api/v1/entries')
+      .set('Authorization', null)
       .send(sampleData.validEntry)
       .end((err, res) => {
         expect(res).to.have.status(401);

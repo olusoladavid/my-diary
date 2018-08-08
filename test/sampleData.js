@@ -8,6 +8,10 @@ const sampleData = {
     password: null,
   },
   incorrectUser: {
+    email: 'john.dave3@gmail.com',
+    password: 'nopassword',
+  },
+  incorrectUser2: {
     email: 'john.dave@gmail.com',
     password: 'nopassword',
   },
