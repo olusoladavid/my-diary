@@ -60,18 +60,27 @@ validate.newEntry = [
     .withMessage('Content should not be empty'),
   check('is_favorite')
     .isBoolean()
-    .withMessage('Story should either be favorited or not'),
+    .withMessage('Entry should either be favorited or not (boolean)'),
 ];
 
 validate.modifyEntry = [
   check('title')
     .isString()
+    .withMessage('Title should be a string')
+    .not()
+    .isEmpty()
+    .withMessage('Title should not be empty')
     .optional(),
   check('content')
     .isString()
+    .withMessage('Content should be a string')
+    .not()
+    .isEmpty()
+    .withMessage('Content should not be empty')
     .optional(),
   check('is_favorite')
     .isBoolean()
+    .withMessage('Entry should either be favorited or not (boolean)')
     .optional(),
 ];
 
