@@ -1,0 +1,393 @@
+swagger: "2.0"
+info:
+  description: "MyDiary is an online journal where users can pen down their thoughts and feelings"
+  version: "1.0.0"
+  title: "MyDiary"
+  termsOfService: ""
+  contact:
+    email: "sola.dav7@gmail.com"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+host: "my-diary-api.herokuapp.com"
+basePath: "/api/v1"
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+    
+tags:
+- name: "Authentication"
+  description: "Endpoints for authentication"
+- name: "Entries"
+  description: "Operations for entries"
+- name: "User"
+  description: "Operations for user information"
+  
+schemes:
+- "https"
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Create a new user account"
+      description: "This endpoint enables the user to create a new user account"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "formData"
+        name: "email"
+        description: "Email address of the user"
+        required: true
+        type: string
+      - in: "formData"
+        name: "password"
+        description: "Desired Password. Must not contain spaces and must be be at least 5 characters long"
+        required: true
+        type: string
+      responses:
+        201:
+          description: "Successful signup"
+          examples:
+            application/json:
+              token: eyERTciergyzIBr1NiwerIdssdeyR5csdfs.LCJleHAiOjE1MjI0MDM3MTR9.piPT-ut9xAg8wYUvC-PgrER45iyyuERR
+        409:
+          description: "User already exists"
+          examples:
+            application/json:
+              error:
+                message:
+                  "User already exists. Please log in"
+        400:
+          description: "Bad request. Invalid credentials or data"
+          examples:
+            application/json:
+              error:
+                message:
+                  - location: body
+                    param: email
+                    value: johnnybravo
+                    msg: Your email is invalid
+  
+  /auth/login:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Logs in existing user and returns a token"
+      description: "This endpoint enables the user to login"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "formData"
+        name: "email"
+        description: "Email address of the user"
+        required: true
+        type: string
+      - in: "formData"
+        name: "password"
+        description: "Desired Password. Must not contain spaces and must be be at least 5 characters long"
+        required: true
+        type: string
+      responses:
+        200:
+          description: "Successful login"
+          examples:
+            application/json:
+              token: eyERTciergyzIBr1NiwerIdssdeyR5csdfs.LCJleHAiOjE1MjI0MDM3MTR9.piPT-ut9xAg8wYUvC-PgrER45iyyuERR
+        422:
+          description: "Incorrect user credentials"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Your email or password is invalid"
+        400:
+          description: "Bad request. Invalid credentials or data"
+          examples:
+            application/json:
+              error:
+                message:
+                  - location: body
+                    param: email
+                    value: johnnybravo
+                    msg: Your email is invalid
+  
+  /profile:
+    get:
+      tags:
+      - "User"
+      summary: "User Profile info"
+      description: "This endpoint returns the user's basic profile info"
+      produces:
+      - "application/json"
+      security:
+      -  Bearer: []
+      responses:
+        200:
+          description: "Successful fetched user info"
+          examples:
+            application/json:
+              email: 'someone@gmail.com'
+              entriesCount: 5
+        401:
+          description: "Authorization error"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Authorization failed. Please provide a token"
+                  
+  /entries:
+    get:
+      tags:
+      - "Entries"
+      summary: "Retrieves all user entries"
+      description: "This endpoint returns an object of user entries and related meta information"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "limit"
+        description: "The maximum number of entries to return for each request"
+        required: false
+        type: string
+      - in: "query"
+        name: "page"
+        description: "The page of entries to return when limit is applied"
+        required: false
+        type: string
+      security:
+      -  Bearer: []
+      responses:
+        200:
+          description: "Successfully fetched all entries"
+          examples:
+            application/json:
+              entries:
+              - id: 14
+                title: 'My last days at Google'
+                content: 'It was an eventful summer. A week characterized by the nuances of IO conference...'
+                is_favorite: true
+                updated_on: '2018-08-02T10:33:49.297Z'
+                created_on: '2018-08-02T10:33:49.297Z'
+              - id: 23
+                title: 'Tough times make tough people'
+                content: 'Mental and character growth is definitely one of the most painful growth experiences in human life...'
+                is_favorite: false
+                updated_on: '2018-08-02T10:33:49.297Z'
+                created_on: '2018-08-02T10:33:49.297Z'
+              meta:
+                limit: 20
+                page: 0
+        401:
+          description: "Authorization error"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Authorization failed. Please provide a token"
+                  
+    post:
+      tags:
+      - "Entries"
+      summary: "Adds a new user entry"
+      description: "This endpoint adds a new user entry and returns the newly added entry"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "formData"
+        name: "title"
+        description: "The title of the entry"
+        required: true
+        type: string
+      - in: "formData"
+        name: "content"
+        description: "The content of the entry"
+        required: true
+        type: string
+      - in: "formData"
+        name: "is_favorite"
+        description: "Boolean value that shows if entry is marked as favorite"
+        required: true
+        type: boolean
+      security:
+      -  Bearer: []
+      responses:
+        201:
+          description: "Successfully created entry"
+          examples:
+            application/json:
+              id: 14
+              title: 'My last days at Google'
+              content: 'It was an eventful summer. A week characterized by the nuances of IO conference...'
+              is_favorite: true
+              created_on: '2018-08-02T10:33:49.297Z'
+        401:
+          description: "Authorization error"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Authorization failed. Please provide a token"
+        400:
+          description: "Bad request. Invalid credentials or data"
+          examples:
+            application/json:
+              error:
+                message:
+                  - location: body
+                    param: title
+                    value: ''
+                    msg: Title should not be empty
+  
+  /entries/{id}:
+    get:
+      tags:
+      - "Entries"
+      summary: "Get entry by id"
+      description: "This endpoint retrieves a single user entry by id"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        required: true
+      security:
+      -  Bearer: []
+      responses:
+        200:
+          description: "Successfully fetched single entry"
+          examples:
+            application/json:
+              id: 14
+              title: 'My last days at Google'
+              content: 'It was an eventful summer. A week characterized by the nuances of IO conference...'
+              is_favorite: true
+              created_on: '2018-08-02T10:33:49.297Z'
+        401:
+          description: "Authorization error"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Authorization failed. Please provide a token"
+        404:
+          description: "Resource not found"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Entry does not exist"
+    
+    put:
+      tags:
+      - "Entries"
+      summary: "Modify entry by id"
+      description: "This endpoint modifies a single user entry by id not later than 24 hours after it was created"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        required: true
+      - in: "formData"
+        name: "title"
+        description: "The title of the entry"
+        required: false
+        type: string
+      - in: "formData"
+        name: "content"
+        description: "The content of the entry"
+        required: false
+        type: string
+      - in: "formData"
+        name: "is_favorite"
+        description: "Boolean value that shows if entry is marked as favorite"
+        required: false
+        type: boolean
+      security:
+      -  Bearer: []
+      responses:
+        200:
+          description: "Successfully modified single entry"
+          examples:
+            application/json:
+              id: 14
+              title: 'My last days at Microsoft'
+              content: 'It was an eventful summer. A week characterized by the nuances of IO conference...'
+              is_favorite: true
+              created_on: '2018-08-02T10:33:49.297Z'
+        401:
+          description: "Authorization error"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Authorization failed. Please provide a token"
+        404:
+          description: "Resource not found"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Entry doees not exist"    
+        400:
+          description: "Bad request. Invalid entry data"
+          examples:
+            application/json:
+              error:
+                message:
+                  - location: body
+                    param: is_favorite
+                    value: ''
+                    msg: Entry should either be favorited or not (boolean)
+                    
+    delete:
+      tags:
+      - "Entries"
+      summary: "Delete entry by id"
+      description: "This endpoint deletes a single user entry by id"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        required: true
+      security:
+      -  Bearer: []
+      responses:
+        204:
+          description: "Successfully deleted single entry"
+        401:
+          description: "Authorization error"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Authorization failed. Please provide a token"
+        404:
+          description: "Resource not found"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Entry not found"

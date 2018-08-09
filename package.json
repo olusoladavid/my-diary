@@ -52,7 +52,9 @@
     "jsonwebtoken": "^8.3.0",
     "morgan": "^1.9.0",
     "pg": "^7.4.3",
-    "pg-connection-string": "^2.0.0"
+    "pg-connection-string": "^2.0.0",
+    "swagger-ui-express": "^3.0.10",
+    "yamljs": "^0.3.0"
   },
   "nyc": {
     "require": [
