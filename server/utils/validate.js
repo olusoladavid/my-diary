@@ -8,6 +8,13 @@ class validate {
   static booleanOrNull(bool) {
     return (typeof bool === 'undefined' ? null : bool);
   }
+
+  static isWithinLast24hours(dateString) {
+    const dateMilli = new Date(dateString).getTime();
+    const hoursSinceCreated = (Date.now() - dateMilli) / (1000 * 60 * 60);
+    if (hoursSinceCreated > 24) return false;
+    return true;
+  }
 }
 
 validate.signupInputs = [

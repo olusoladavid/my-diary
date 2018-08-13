@@ -25,6 +25,13 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use('/api/v1', router);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(docs));
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    next(err);
+  } else {
+    res.status(500).json({ error: { message: 'An error occurred on the server' } });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}!`);
