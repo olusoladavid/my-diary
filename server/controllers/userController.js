@@ -1,9 +1,7 @@
-import { validationResult } from 'express-validator/check';
 import bcrypt from 'bcrypt';
 import { query } from '../db/index';
 import queries from '../db/queries';
 import signAuthToken from '../utils/signAuthToken';
-
 
 class userController {
   /**
@@ -18,13 +16,6 @@ class userController {
   static createUser(req, res) {
     // get email and password in request body
     const { email, password } = req.body;
-
-    // validate email and password - 400
-    const errorsFound = validationResult(req);
-    if (!errorsFound.isEmpty()) {
-      res.status(400).json({ error: { message: errorsFound.array() } });
-      return;
-    }
 
     // check if email already exists - 409
     query(queries.getOneUser, [email], (qErr, user) => {
@@ -75,12 +66,7 @@ class userController {
   static loginUser(req, res) {
     // get email and password in request body
     const { email, password } = req.body;
-    // validate email and password - 400
-    const errorsFound = validationResult(req);
-    if (!errorsFound.isEmpty()) {
-      res.status(400).json({ error: { message: errorsFound.array() } });
-      return;
-    }
+
     // fetch user
     query(queries.getOneUser, [email], (qErr, userData) => {
       if (qErr) {
