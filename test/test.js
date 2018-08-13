@@ -170,7 +170,7 @@ describe('/GET entries', () => {
     chai
       .request(app)
       .get('/api/v1/entries')
-      .set('Authorization', null)
+      .set('Authorization', '')
       .end((err, res) => {
         expect(res).to.have.status(401);
         expect(res.body).to.be.an('object');

@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { query } from '../db/index';
 import queries from '../db/queries';
+import signAuthToken from '../utils/signAuthToken';
 
 
 class userController {
@@ -53,9 +54,8 @@ class userController {
 
           // create token using new data and sign with password hash+lastLogin+lastLogout
           const userInfo = newUser.rows[0];
-          const jwtSecret = process.env.SECRET_KEY;
           const data = { email: userInfo.email, createdOn: userInfo.created_on };
-          const token = jwt.sign(data, jwtSecret, { expiresIn: '2h' });
+          const token = signAuthToken(data);
 
           // signed token - 201
           res.status(201).json({ token });
@@ -100,10 +100,10 @@ class userController {
           return;
         }
         // create token
-        const jwtSecret = process.env.SECRET_KEY;
-        const token = jwt.sign({
+        const data = {
           email: userData.rows[0].email, createdOn: userData.rows[0].created_on,
-        }, jwtSecret);
+        };
+        const token = signAuthToken(data);
         // return signed token - 200
         res.status(200).json({ token });
       });
