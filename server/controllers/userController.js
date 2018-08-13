@@ -1,6 +1,5 @@
 import { validationResult } from 'express-validator/check';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { query } from '../db/index';
 import queries from '../db/queries';
 import signAuthToken from '../utils/signAuthToken';
