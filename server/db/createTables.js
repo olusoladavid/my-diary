@@ -7,7 +7,8 @@ const usersTableQuery = `CREATE TABLE IF NOT EXISTS users
     password VARCHAR (255)   NOT NULL,
     created_on TIMESTAMP  DEFAULT now() NOT NULL,
     updated_on TIMESTAMP  DEFAULT now() NOT NULL,
-    reminderIsSet BOOLEAN DEFAULT false NOT NULL
+    reminderIsSet BOOLEAN DEFAULT false NOT NULL,
+    push_sub JSON
 );`;
 
 const entriesTableQuery = `CREATE TABLE IF NOT EXISTS entries (
