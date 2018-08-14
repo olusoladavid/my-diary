@@ -3,6 +3,7 @@ import userController from '../controllers/userController';
 import entryController from '../controllers/entryController';
 import verifyToken from '../utils/verifyToken';
 import validate from '../utils/validate';
+import handleValidationErrors from '../utils/handleValidationErrors';
 
 const router = express.Router();
 
@@ -12,22 +13,22 @@ router.get('/', (req, res) => {
 });
 
 /* Create a new user */
-router.post('/auth/signup', validate.signupInputs, userController.createUser);
+router.post('/auth/signup', validate.signupInputs, handleValidationErrors, userController.createUser);
 
 /* Login user */
-router.post('/auth/login', validate.loginInputs, userController.loginUser);
+router.post('/auth/login', validate.loginInputs, handleValidationErrors, userController.loginUser);
 
 /* GET all user entries */
 router.get('/entries', verifyToken, entryController.getAllEntries);
 
 /* POST a new entry */
-router.post('/entries', verifyToken, validate.newEntry, entryController.addEntry);
+router.post('/entries', verifyToken, validate.newEntry, handleValidationErrors, entryController.addEntry);
 
 /* GET a single entry */
 router.get('/entries/:id', verifyToken, entryController.getEntry);
 
 /* PUT new data in existing entry */
-router.put('/entries/:id', verifyToken, validate.modifyEntry, entryController.modifyEntry);
+router.put('/entries/:id', verifyToken, validate.modifyEntry, handleValidationErrors, entryController.modifyEntry);
 
 /* DELETE a single entry */
 router.delete('/entries/:id', verifyToken, entryController.deleteEntry);

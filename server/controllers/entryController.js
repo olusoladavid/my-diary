@@ -1,4 +1,3 @@
-import { validationResult } from 'express-validator/check';
 import { query } from '../db/index';
 import validate from '../utils/validate';
 import queries from '../db/queries';
@@ -42,13 +41,6 @@ class entryController {
    * @memberof entryController
    */
   static addEntry(req, res) {
-    // validate entry fields - 400
-    const errorsFound = validationResult(req);
-    if (!errorsFound.isEmpty()) {
-      res.status(400).json({ error: { message: errorsFound.array() } });
-      return;
-    }
-
     const { title, content, is_favorite: isFavorite } = req.body;
 
     // add entry to database
@@ -100,18 +92,10 @@ class entryController {
    * @memberof entryController
    */
   static modifyEntry(req, res) {
-    // validate entry fields - 400
-    const errorsFound = validationResult(req);
-    if (!errorsFound.isEmpty()) {
-      res.status(400).json({ error: { message: errorsFound.array() } });
-      return;
-    }
-
     // deconstruct request body
     let { title, content } = req.body;
     title = title || null;
     content = content || null;
-    // check if isFavorite is defined
     const isFavorite = validate.booleanOrNull(req.body.is_favorite);
 
     // check if entry is already older than a day
