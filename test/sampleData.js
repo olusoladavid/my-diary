@@ -19,6 +19,11 @@ const sampleData = {
   validEntry: {
     title: 'Cool Title',
     content: 'Awesome content',
+    is_favorite: false,
+  },
+  anotherValidEntry: {
+    title: 'Another Cool Title',
+    content: 'Another Awesome content',
     is_favorite: true,
   },
   invalidEntry: {
@@ -33,7 +38,16 @@ const sampleData = {
   incompleteInvalidEntry: {
     is_favorite: 'true',
   },
-  invalidEntryId: 0,
+  invalidEntryId: 'id',
+  nonExistentId: 5,
+  validProfile: {
+    push_sub: JSON.stringify({ channel: 'foo' }),
+  },
+  invalidProfile: {
+    email_reminder: '',
+  },
+  timestampNow: 1534258252771,
+  justOverADay: 24 * 3600 * 1000 + 1,
 };
 
 export default sampleData;

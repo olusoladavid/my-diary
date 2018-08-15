@@ -1,4 +1,4 @@
-import { queryClient } from './index';
+import { query } from './index';
 
 const usersTableQuery = `CREATE TABLE IF NOT EXISTS users
 (
@@ -21,13 +21,12 @@ const entriesTableQuery = `CREATE TABLE IF NOT EXISTS entries (
     is_favorite BOOLEAN DEFAULT false NOT NULL
 );`;
 
-const createTables = () => queryClient((err, client, done) => {
-  if (err) {
-    console.log(err.stack);
-  } else {
-    done();
-    client.query(`${usersTableQuery} ${entriesTableQuery}`);
+const createTables = async () => {
+  try {
+    await query(`${usersTableQuery} ${entriesTableQuery}`);
+  } catch (error) {
+    console.error(error.stack);
   }
-});
+};
 
 export default createTables;

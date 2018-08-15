@@ -15,16 +15,24 @@ class entryController {
    */
   static async getAllEntries(req, res, next) {
     try {
+      // get query params
       let { limit, page } = req.query;
+      const { filter } = req.query;
 
-      // validate queries
-      limit = validate.isNumber(limit) ? limit : 20;
-      page = validate.isNumber(page) ? page : 0;
+      limit = limit ? parseInt(limit, 10) : 20;
+      page = page ? parseInt(page, 10) : 0;
+      const favs = filter && filter === 'favs' ? 't' : 'all';
 
       // get entries
       const userEntries = await query(queries.getAllEntries,
-        [req.authorizedUser.email, limit, page * limit]);
-      res.status(200).json({ entries: userEntries.rows, meta: { limit, page } });
+        [req.authorizedUser.email, favs]);
+      const start = limit * page;
+      const stop = limit * (page + 1);
+      const selectedEntries = userEntries.rows.slice(start, stop);
+      res.status(200).json({
+        entries: selectedEntries,
+        meta: { limit, page, count: userEntries.rows.length },
+      });
     } catch (error) {
       next(error);
     }
@@ -92,18 +100,18 @@ class entryController {
       const isFavorite = validate.booleanOrNull(req.body.is_favorite);
 
       // check if entry exists and is already older than a day
-      const entryDate = await query(queries.getEntryCreationDate,
+      const entry = await query(queries.getOneEntry,
         [req.authorizedUser.email, req.params.id]);
-      if (!entryDate.rowCount) res.status(404).json({ error: { message: 'Entry not found' } });
+      if (!entry.rowCount) res.status(404).json({ error: { message: 'Entry not found' } });
 
       // older than a day?
-      if (!validate.isWithinLast24hours(entryDate.rows[0].created_on)) {
+      if (!validate.isWithinLast24hours(entry.rows[0].created_on)) {
         res.status(403).json({ error: { message: 'Cannot update entry after 24 hours' } });
       } else {
         // add entry to database
-        const entry = await query(queries.updateOneEntry,
+        const updatedEntry = await query(queries.updateOneEntry,
           [title, content, isFavorite, req.authorizedUser.email, req.params.id]);
-        res.status(200).json(entry.rows[0]);
+        res.status(200).json(updatedEntry.rows[0]);
       }
     } catch (error) {
       next(error);
