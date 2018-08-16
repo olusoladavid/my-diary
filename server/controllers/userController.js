@@ -85,19 +85,38 @@ class userController {
 
   /**
    * @description Fetches user profile
-   *
+   * Returns user profile information
    * @static
    * @param {*} req - Request object
    * @param {*} res - Response object
+   * @returns {data} email, entriesCount
    * @memberof userController
    */
   static async getProfile(req, res, next) {
     try {
-      const entriesCounter = await query(queries.getEntriesCount, [req.authorizedUser.email]);
+      const allEntries = await query(queries.getAllEntries, [req.authorizedUser.email, 'all']);
+      const favEntries = await query(queries.getAllEntries, [req.authorizedUser.email, 't']);
+      const user = await query(queries.getOneUser, [req.authorizedUser.email]);
       res.status(200).json({
         email: req.authorizedUser.email,
-        entriesCount: entriesCounter.rows[0].count,
+        entries_count: allEntries.rows.length,
+        fav_count: favEntries.rows.length,
+        created_on: user.rows[0].created_on,
+        push_sub: JSON.parse(user.rows[0].push_sub),
+        email_reminder: user.rows[0].reminderisset,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateProfile(req, res, next) {
+    try {
+      const { push_sub: pushSub, email_reminder: reminderIsSet } = req.body;
+      const pushSubString = JSON.stringify(pushSub);
+      await query(queries.updateProfile, [req.authorizedUser.email,
+        pushSubString, reminderIsSet]);
+      res.sendStatus(204);
     } catch (error) {
       next(error);
     }

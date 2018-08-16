@@ -13,27 +13,53 @@ router.get('/', (req, res) => {
 });
 
 /* Create a new user */
-router.post('/auth/signup', validate.signupInputs, handleValidationErrors, userController.createUser);
+router.post(
+  '/auth/signup',
+  validate.signupInputs,
+  handleValidationErrors,
+  userController.createUser,
+);
 
 /* Login user */
 router.post('/auth/login', validate.loginInputs, handleValidationErrors, userController.loginUser);
 
 /* GET all user entries */
-router.get('/entries', verifyToken, entryController.getAllEntries);
+router.get('/entries', verifyToken, validate.getEntries, handleValidationErrors, entryController.getAllEntries);
 
 /* POST a new entry */
-router.post('/entries', verifyToken, validate.newEntry, handleValidationErrors, entryController.addEntry);
+router.post(
+  '/entries',
+  verifyToken,
+  validate.newEntry,
+  handleValidationErrors,
+  entryController.addEntry,
+);
 
 /* GET a single entry */
-router.get('/entries/:id', verifyToken, entryController.getEntry);
+router.get('/entries/:id', verifyToken, validate.getEntry, handleValidationErrors, entryController.getEntry);
 
 /* PUT new data in existing entry */
-router.put('/entries/:id', verifyToken, validate.modifyEntry, handleValidationErrors, entryController.modifyEntry);
+router.put(
+  '/entries/:id',
+  verifyToken,
+  validate.modifyEntry,
+  handleValidationErrors,
+  entryController.modifyEntry,
+);
 
 /* DELETE a single entry */
-router.delete('/entries/:id', verifyToken, entryController.deleteEntry);
+router.delete('/entries/:id', verifyToken, validate.deleteEntry, handleValidationErrors, entryController.deleteEntry);
 
 /* GET user profile */
 router.get('/profile', verifyToken, userController.getProfile);
+
+/* PUT user profile */
+router.put(
+  '/profile',
+  verifyToken,
+  validate.updateProfile,
+  handleValidationErrors,
+  userController.updateProfile,
+);
 
 export default router;

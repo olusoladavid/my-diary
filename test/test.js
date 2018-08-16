@@ -1,31 +1,33 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { before } from 'mocha';
+import sinon from 'sinon';
 import app from '../server/index';
 import sampleData from './sampleData';
-import { query } from '../server/db/index';
+import { pool, query } from '../server/db/index';
+import createTables from '../server/db/createTables';
 
 const { expect } = chai;
 chai.use(chaiHttp);
 
 let token; // for caching token for further requests
 let cachedEntry; // for caching retrieved entry for later comparison
+let clock; // for manipulating datetime stub
+let entryCreationDate; // for storing pg date of cached entry
 
 const makeAuthHeader = authToken => `Bearer ${authToken}`;
 
-before(() => {
+before(async () => {
   // remove all entries
-  query('TRUNCATE TABLE entries CASCADE', (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+  const task1 = await query('TRUNCATE TABLE entries CASCADE');
   // remove all users
-  query('TRUNCATE TABLE users CASCADE', (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+  const task2 = await query('TRUNCATE TABLE users CASCADE');
+  // reset entries id column sequence
+  if (task1.rows && task2.rows) await query('ALTER SEQUENCE entries_id_seq RESTART WITH 1');
+});
+
+after(() => {
+  clock.restore();
 });
 
 describe('/GET API base', () => {
@@ -111,7 +113,7 @@ describe('/POST /auth/login', () => {
       });
   });
 
-  it('should return 422 unprocessable request when a user tries to login with the valid but wrong credentials', (done) => {
+  it('should not login user with valid but wrong credentials', (done) => {
     chai
       .request(app)
       .post('/api/v1/auth/login')
@@ -124,7 +126,7 @@ describe('/POST /auth/login', () => {
       });
   });
 
-  it('should return 422 unprocessable request when a user tries to login with the valid but wrong credentials', (done) => {
+  it('should return not login user with valid but wrong credentials', (done) => {
     chai
       .request(app)
       .post('/api/v1/auth/login')
@@ -178,6 +180,36 @@ describe('/GET entries', () => {
         done();
       });
   });
+
+  it('should return 400 bad request when passed invalid querystring', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get('/api/v1/entries?filter=true&limit=0&page=page')
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 500 internal error when database throws error', (done) => {
+    const queryStub = sinon.stub(pool, 'query').throws(new Error('Query failed'));
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(500);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('error');
+        queryStub.restore();
+        done();
+      });
+  });
 });
 
 describe('/POST entries', () => {
@@ -194,6 +226,7 @@ describe('/POST entries', () => {
         expect(res.body).to.be.have.all.keys('id', 'created_on', 'title', 'content', 'is_favorite');
         // cache entry id for future requests
         cachedEntry = res.body;
+        entryCreationDate = new Date(res.body.created_on).getTime();
         done();
       });
   });
@@ -240,6 +273,38 @@ describe('/POST entries', () => {
         done();
       });
   });
+
+  it('should create another entry which is a user favorite when passed valid data and token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .post('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.anotherValidEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('is_favorite', true);
+        done();
+      });
+  });
+
+  it('should return 500 error due to database error', (done) => {
+    const queryStub = sinon.stub(pool, 'query').throws(new Error('Query failed'));
+    chai
+      .request(app)
+      // Set the Authorization header
+      .post('/api/v1/entries')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.anotherValidEntry)
+      .end((err, res) => {
+        expect(res).to.have.status(500);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        queryStub.restore();
+        done();
+      });
+  });
 });
 
 describe('/GET entries', () => {
@@ -253,7 +318,48 @@ describe('/GET entries', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         expect(res.body).to.have.property('entries');
-        expect(res.body.entries).to.have.length.greaterThan(0);
+        expect(res.body.entries.length).to.eql(2);
+        expect(res.body.meta).to.have.property('count', 2);
+        done();
+      });
+  });
+
+  it('should return user entries according to query params when passed a valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get('/api/v1/entries?filter=favs&limit=1&page=0')
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('meta');
+        const { limit, page, count } = res.body.meta;
+        expect(limit).to.eql(1);
+        expect(page).to.eql(0);
+        expect(count).to.eql(1);
+        // the only entry returned is a user favorite
+        expect(res.body.entries[0]).to.have.property('is_favorite', true);
+        done();
+      });
+  });
+
+  it('should return user entries according to query params when passed a valid token', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get('/api/v1/entries?limit=1&page=1')
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('meta');
+        // just one entry should be returned even though count is 2
+        expect(res.body.entries.length).to.eql(1);
+        const { limit, page, count } = res.body.meta;
+        expect(limit).to.eql(1);
+        expect(page).to.eql(1);
+        expect(count).to.eql(2);
         done();
       });
   });
@@ -273,11 +379,24 @@ describe('/GET/:id entries', () => {
       });
   });
 
+  it('should return 400 bad request when passed a valid token but nonexistent id', (done) => {
+    chai
+      .request(app)
+      .get(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
   it('should return a 404 not found error when passed an invalid entry id and a valid token', (done) => {
     chai
       .request(app)
       // Set the Authorization header
-      .get(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .get(`/api/v1/entries/${sampleData.nonExistentId}`)
       .set('Authorization', makeAuthHeader(token))
       .end((err, res) => {
         expect(res).to.have.status(404);
@@ -296,6 +415,22 @@ describe('/GET/:id entries', () => {
         expect(res).to.have.status(401);
         expect(res.body).to.be.an('object');
         expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 500 internal error when database throws error', (done) => {
+    const queryStub = sinon.stub(pool, 'query').throws(new Error('Query failed'));
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(500);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.have.property('error');
+        queryStub.restore();
         done();
       });
   });
@@ -349,7 +484,7 @@ describe('/PUT entries', () => {
   it('should return 404 not found error when passed valid data, valid token but invalid id', (done) => {
     chai
       .request(app)
-      .put(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .put(`/api/v1/entries/${sampleData.nonExistentId}`)
       .set('Authorization', makeAuthHeader(token))
       .send(sampleData.validEntry)
       .end((err, res) => {
@@ -357,6 +492,48 @@ describe('/PUT entries', () => {
         expect(res.body).to.be.an('object');
         expect(res.body).to.be.have.property('error');
         done();
+      });
+  });
+
+  it('should return 200 and unmodified data when passed an empty body', (done) => {
+    chai
+      .request(app)
+      // Set the Authorization header
+      .put(`/api/v1/entries/${cachedEntry.id}`)
+      .set('Authorization', makeAuthHeader(token))
+      .send({})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.eql(Object.assign(cachedEntry, sampleData.incompleteValidEntry));
+        done();
+      });
+  });
+
+  it('should return 403 forbidden error when user tries to update entry after 24 hours', (done) => {
+    // initialize the clock with entry creation date
+    clock = sinon.useFakeTimers(entryCreationDate);
+    // set the clock to just over 24 hours later
+    clock.tick(sampleData.justOverADay);
+    // get a new token 24 hours later
+    chai
+      .request(app)
+      .post('/api/v1/auth/login')
+      .send(sampleData.validUser)
+      .end((err, res) => {
+        ({ token } = res.body);
+        // run test in nested callback
+        chai
+          .request(app)
+          .put(`/api/v1/entries/${cachedEntry.id}`)
+          .set('Authorization', makeAuthHeader(token))
+          .send(sampleData.validEntry)
+          .end((error, result) => {
+            expect(result).to.have.status(403);
+            expect(result.body).to.be.an('object');
+            expect(result.body).to.be.have.property('error');
+            done();
+          });
       });
   });
 });
@@ -375,6 +552,19 @@ describe('/DELETE/:id entries', () => {
       });
   });
 
+  it('should return 400 bad request error when passed invalid id', (done) => {
+    chai
+      .request(app)
+      .delete(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
   it('should delete a single user entry with specified existing id when passed a valid token', (done) => {
     chai
       .request(app)
@@ -387,11 +577,11 @@ describe('/DELETE/:id entries', () => {
       });
   });
 
-  it('should return a 404 not found error when passed an invalid entry id and a valid token', (done) => {
+  it('should return a 404 not found error when passed a nonexistent id and a valid token', (done) => {
     chai
       .request(app)
       // Set the Authorization header
-      .delete(`/api/v1/entries/${sampleData.invalidEntryId}`)
+      .delete(`/api/v1/entries/${sampleData.nonExistentId}`)
       .set('Authorization', makeAuthHeader(token))
       .end((err, res) => {
         expect(res).to.have.status(404);
@@ -424,7 +614,103 @@ describe('/GET profile', () => {
       .set('Authorization', makeAuthHeader(token))
       .end((err, res) => {
         expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.keys(['entries_count', 'fav_count', 'push_sub',
+          'email_reminder', 'email', 'created_on']);
         done();
       });
+  });
+
+  it('should return 500 server error due to database query error', (done) => {
+    const queryStub = sinon.stub(pool, 'query').throws(new Error('Query failed'));
+    chai
+      .request(app)
+      // Set the Authorization header
+      .get('/api/v1/profile')
+      .set('Authorization', makeAuthHeader(token))
+      .end((err, res) => {
+        expect(res).to.have.status(500);
+        expect(res.body).to.be.an('object');
+        // createTables() should yield an error under these conditions
+        createTables();
+        // continue
+        expect(res.body).to.be.have.property('error');
+        queryStub.restore();
+        done();
+      });
+  });
+});
+
+describe('/PUT profile', () => {
+  it('should return 204 Ok when passed valid token and valid data', (done) => {
+    chai
+      .request(app)
+      .put('/api/v1/profile')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.validProfile)
+      .end((err, res) => {
+        expect(res).to.have.status(204);
+        done();
+      });
+  });
+
+  it('should return 204 Ok when passed empty data', (done) => {
+    chai
+      .request(app)
+      .put('/api/v1/profile')
+      .set('Authorization', makeAuthHeader(token))
+      .send({})
+      .end((err, res) => {
+        expect(res).to.have.status(204);
+        done();
+      });
+  });
+
+  it('should return 401 unauthorized error when passed an invalid or expired token', (done) => {
+    chai
+      .request(app)
+      .put('/api/v1/profile')
+      .set('Authorization', makeAuthHeader(sampleData.invalidToken))
+      .send(sampleData.validProfile)
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+
+  it('should return 400 bad request error when passed a valid token and invalid data', (done) => {
+    chai
+      .request(app)
+      .put('/api/v1/profile')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.invalidProfile)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        done();
+      });
+  });
+});
+
+describe('/PUT profile error handling', () => {
+  it('should return 500 server error due to database query error', (done) => {
+    const queryStub = sinon.stub(pool, 'query').throws(new Error('Query failed'));
+    chai
+      .request(app)
+      // Set the Authorization header
+      .put('/api/v1/profile')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.validProfile)
+      .end((err, res) => {
+        expect(res).to.have.status(500);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.be.have.property('error');
+        queryStub.restore();
+        done();
+      });
+    done();
   });
 });
