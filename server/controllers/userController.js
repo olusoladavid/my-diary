@@ -102,8 +102,8 @@ class userController {
         entries_count: allEntries.rows.length,
         fav_count: favEntries.rows.length,
         created_on: user.rows[0].created_on,
-        push_sub: Boolean(user.rows[0].push_sub),
-        email_reminder: Boolean(user.rows[0].reminderisset),
+        push_sub: JSON.parse(user.rows[0].push_sub),
+        email_reminder: user.rows[0].reminderisset,
       });
     } catch (error) {
       next(error);
