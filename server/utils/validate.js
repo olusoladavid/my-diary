@@ -95,7 +95,7 @@ validate.updateProfile = [
     .isJSON()
     .withMessage('Push Subscription should be JSON')
     .optional(),
-  body('email_reminder')
+  body('reminder_set')
     .isBoolean()
     .withMessage('Email reminder preference should be boolean')
     .optional(),
