@@ -18,6 +18,8 @@ let entryCreationDate; // for storing pg date of cached entry
 const makeAuthHeader = authToken => `Bearer ${authToken}`;
 
 before(async () => {
+  // try to create tables if they dont exist
+  await createTables();
   // remove all entries
   const task1 = await query('TRUNCATE TABLE entries CASCADE');
   // remove all users
@@ -616,7 +618,7 @@ describe('/GET profile', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
         expect(res.body).to.be.have.keys(['entries_count', 'fav_count', 'push_sub',
-          'email_reminder', 'email', 'created_on']);
+          'reminder_set', 'email', 'created_on']);
         done();
       });
   });

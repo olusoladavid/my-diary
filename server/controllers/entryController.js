@@ -133,7 +133,7 @@ class entryController {
       if (!deleted.rowCount) {
         res.status(404).json({ error: { message: 'Entry not found' } });
       }
-      res.sendStatus(204);
+      res.status(204).json();
     } catch (error) {
       next(error);
     }

@@ -6,7 +6,7 @@ queries.insertOneUser = 'INSERT INTO users(email, password) VALUES($1, $2) RETUR
 
 queries.getAllEntries = `SELECT entries.id, entries.title, entries.content, entries.created_on, 
 entries.updated_on, entries.is_favorite FROM entries INNER JOIN users ON entries.user_id=users.id 
-WHERE (users.email=$1) AND ($2='all' OR entries.is_favorite='t')`;
+WHERE (users.email=$1) AND ($2='all' OR entries.is_favorite='t') ORDER BY entries.created_on DESC`;
 
 queries.getOneEntry = `SELECT entries.id, entries.title, entries.content, 
 entries.created_on, entries.is_favorite FROM entries INNER JOIN users ON entries.user_id = users.id 

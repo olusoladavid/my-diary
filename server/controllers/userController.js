@@ -103,7 +103,7 @@ class userController {
         fav_count: favEntries.rows.length,
         created_on: user.rows[0].created_on,
         push_sub: JSON.parse(user.rows[0].push_sub),
-        email_reminder: user.rows[0].reminderisset,
+        reminder_set: user.rows[0].reminderisset,
       });
     } catch (error) {
       next(error);
@@ -112,11 +112,11 @@ class userController {
 
   static async updateProfile(req, res, next) {
     try {
-      const { push_sub: pushSub, email_reminder: reminderIsSet } = req.body;
+      const { push_sub: pushSub, reminder_set: reminderIsSet } = req.body;
       const pushSubString = JSON.stringify(pushSub);
       await query(queries.updateProfile, [req.authorizedUser.email,
         pushSubString, reminderIsSet]);
-      res.sendStatus(204);
+      res.status(204).json();
     } catch (error) {
       next(error);
     }

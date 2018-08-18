@@ -44,7 +44,7 @@ const sampleData = {
     push_sub: JSON.stringify({ channel: 'foo' }),
   },
   invalidProfile: {
-    email_reminder: '',
+    reminder_set: '',
   },
   timestampNow: 1534258252771,
   justOverADay: 24 * 3600 * 1000 + 1,
