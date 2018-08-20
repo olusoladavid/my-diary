@@ -70,12 +70,16 @@ paths:
           examples:
             application/json:
               error:
-                message:
-                  - location: body
-                    param: email
-                    value: johnnybravo
-                    msg: Your email is invalid
-  
+                  - param: email
+                    message: Your email is invalid
+                  - param: password
+                    message: Your password should contain minimum of 5 characters
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server
   /auth/login:
     post:
       tags:
@@ -116,11 +120,16 @@ paths:
           examples:
             application/json:
               error:
-                message:
-                  - location: body
-                    param: email
-                    value: johnnybravo
-                    msg: Your email is invalid
+                  - param: email
+                    message: Your email is invalid
+                  - param: password
+                    message: Your password should contain minimum of 5 characters
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server
   
   /profile:
     get:
@@ -137,8 +146,12 @@ paths:
           description: "Successful fetched user info"
           examples:
             application/json:
-              email: 'someone@gmail.com'
-              entriesCount: 5
+              email: john.dave@gmail.com
+              entries_count: 35
+              fav_count: 8
+              created_on: '2018-08-17T23:58:13.698Z'
+              push_sub: {}
+              reminder_set: true
         401:
           description: "Authorization error"
           examples:
@@ -146,7 +159,63 @@ paths:
               error:
                 message:
                   "Authorization failed. Please provide a token"
-                  
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server
+    put:
+      tags:
+      - "User"
+      summary: "Update user profile and preferences"
+      description: "This endpoint updates the user's profile amd sets their reminder preferences"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "formData"
+        name: "push_sub"
+        description: "The push subscription object"
+        required: false
+        type: string
+      - in: "formData"
+        name: "reminder_set"
+        description: "Boolean indicating whether reminder is set or not"
+        required: false
+        type: string
+      security:
+      -  Bearer: []
+      responses:
+        204:
+          description: "Successfully updated user profile"
+          examples:
+            application/json:
+              No content
+        400:
+          description: "Bad request. Invalid credentials or data"
+          examples:
+            application/json:
+              error:
+                  - param: push_sub
+                    message: Push Subscription should be JSON
+                  - param: reminder_set
+                    message: Reminder preference should be boolean
+        401:
+          description: "Authorization error"
+          examples:
+            application/json:
+              error:
+                message:
+                  "Authorization failed. Please provide a token"
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server
   /entries:
     get:
       tags:
@@ -156,6 +225,11 @@ paths:
       produces:
       - "application/json"
       parameters:
+      - in: "query"
+        name: "filter"
+        description: "The entries that have a particular property which is the value of the filter"
+        required: false
+        type: string
       - in: "query"
         name: "limit"
         description: "The maximum number of entries to return for each request"
@@ -189,6 +263,7 @@ paths:
               meta:
                 limit: 20
                 page: 0
+                count: 2
         401:
           description: "Authorization error"
           examples:
@@ -196,7 +271,12 @@ paths:
               error:
                 message:
                   "Authorization failed. Please provide a token"
-                  
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server
     post:
       tags:
       - "Entries"
@@ -247,12 +327,16 @@ paths:
           examples:
             application/json:
               error:
-                message:
-                  - location: body
-                    param: title
-                    value: ''
-                    msg: Title should not be empty
-  
+                  - param: title
+                    message: Title should not be empty
+                  - param: content
+                    message: Content should not be empty
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server
   /entries/{id}:
     get:
       tags:
@@ -291,8 +375,13 @@ paths:
             application/json:
               error:
                 message:
-                  "Entry does not exist"
-    
+                  "Entry not found"
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server
     put:
       tags:
       - "Entries"
@@ -335,6 +424,15 @@ paths:
               content: 'It was an eventful summer. A week characterized by the nuances of IO conference...'
               is_favorite: true
               created_on: '2018-08-02T10:33:49.297Z'
+        400:
+          description: "Bad request. Invalid credentials or data"
+          examples:
+            application/json:
+              error:
+                  - param: title
+                    message: Title should not be empty
+                  - param: content
+                    message: Content should not be empty
         401:
           description: "Authorization error"
           examples:
@@ -342,23 +440,19 @@ paths:
               error:
                 message:
                   "Authorization failed. Please provide a token"
-        404:
-          description: "Resource not found"
+        403:
+          description: "Cannot update entry 24 hours or more after it was created"
           examples:
             application/json:
               error:
                 message:
-                  "Entry doees not exist"    
-        400:
-          description: "Bad request. Invalid entry data"
+                  "Cannot update entry after 24 hours"
+        500:
+          description: "Server Error"
           examples:
             application/json:
               error:
-                message:
-                  - location: body
-                    param: is_favorite
-                    value: ''
-                    msg: Entry should either be favorited or not (boolean)
+                message: An error occurred on the server
                     
     delete:
       tags:
@@ -391,3 +485,9 @@ paths:
               error:
                 message:
                   "Entry not found"
+        500:
+          description: "Server Error"
+          examples:
+            application/json:
+              error:
+                message: An error occurred on the server

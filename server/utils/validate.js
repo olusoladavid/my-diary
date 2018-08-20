@@ -97,7 +97,7 @@ validate.updateProfile = [
     .optional(),
   body('reminder_set')
     .isBoolean()
-    .withMessage('Email reminder preference should be boolean')
+    .withMessage('Reminder preference should be boolean')
     .optional(),
 ];
 
@@ -117,7 +117,7 @@ validate.getEntries = [
     .isEmpty()
     .withMessage('Filter parameter should not be empty')
     .isIn(['favs'])
-    .withMessage('Filter paramter value is invalid')
+    .withMessage('Filter parameter value is invalid')
     .optional(),
 ];
 

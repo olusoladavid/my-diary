@@ -34,6 +34,7 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 | POST `/auth/signup`         | Register a user      |
 | POST `/auth/login`          | Login a user         |
 | GET `/profile`              | Fetch user profile   |
+| PUT `/profile`              | Update user profile  |
 | GET `/entries`              | Fetch all entries    |
 | GET `/entries/<entryId>`    | Fetch a single entry |
 | POST `/entries`             | Create an entry      |
@@ -43,18 +44,18 @@ MyDiary is an online journal where users can pen down their thoughts and feeling
 ## Build Setup
 
 ```
-#clone repo and cd into directory
+# Clone repo and cd into directory
 git clone https://github.com/olusoladavid/my-diary.git
 ```
 
 ```
-# install dependencies
+# Install dependencies
 npm install
 
-#serve in development environment
+# Serve in development environment
 npm run dev
 
-# build for production
+# Build for production
 npm run build
 ```
 
@@ -65,9 +66,13 @@ npm run build
 npm test
 ```
 
+## Links
+
+Documentation: https://my-diary-api.herokuapp.com/api/docs
+
 API Endpoint: https://my-diary-api.herokuapp.com/api/v1
 
-UI Template: https://olusoladavid.github.io/my-diary/UI/
+Live Client: https://olusoladavid.github.io/my-diary-client
 
 ## License
 
