@@ -2,10 +2,12 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { before } from 'mocha';
 import sinon from 'sinon';
+import webpush from 'web-push';
 import app from '../server/index';
 import sampleData from './sampleData';
 import { pool, query } from '../server/db/index';
 import createTables from '../server/db/createTables';
+import processNotifications from '../server/workers/sendReminder';
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -714,5 +716,44 @@ describe('/PUT profile error handling', () => {
         done();
       });
     done();
+  });
+});
+
+describe('Daily reminder feature', () => {
+  it('should not send a notification when a database error occurs', async () => {
+    pool.query.restore();
+    sinon.stub(pool, 'query').alwaysCalledWith('invalidQuery');
+    const webPushStub = sinon.spy(webpush, 'sendNotification');
+    await processNotifications();
+    expect(webPushStub.called).to.be.eql(false);
+    pool.query.restore();
+    webPushStub.restore();
+  });
+
+  it('should return a promise that resolves when notification is sent', async () => {
+    const webPushStub = sinon.stub(webpush, 'sendNotification');
+    webPushStub.resolves();
+    await processNotifications();
+    expect(webPushStub.called).to.be.eql(true);
+    webPushStub.restore();
+  });
+
+  it('should return a promise that rejects when notification is not sent', async () => {
+    const webPushStub = await sinon.stub(webpush, 'sendNotification').rejects();
+    await processNotifications();
+    expect(webPushStub.called).to.be.eql(true);
+    webPushStub.restore();
+  });
+
+  it('should not send a notification when the reminder is not set', async () => {
+    await chai
+      .request(app)
+      .put('/api/v1/profile')
+      .set('Authorization', makeAuthHeader(token))
+      .send(sampleData.noReminderProfile);
+    const webPushSpy = sinon.spy(webpush, 'sendNotification');
+    await processNotifications();
+    expect(webPushSpy.called).to.be.eql(false);
+    webPushSpy.restore();
   });
 });

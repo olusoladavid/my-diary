@@ -41,7 +41,11 @@ const sampleData = {
   invalidEntryId: 'id',
   nonExistentId: 5,
   validProfile: {
-    push_sub: JSON.stringify({ channel: 'foo' }),
+    push_sub: JSON.stringify({ keys: 'foo' }),
+    reminder_set: true,
+  },
+  noReminderProfile: {
+    reminder_set: false,
   },
   invalidProfile: {
     reminder_set: '',
