@@ -25,11 +25,14 @@ const processNotifications = async () => {
   if (users) {
     users.forEach(async (user) => {
       if (user.reminderisset) {
-        const msg = '{ type: reminder }';
-        const options = { TTL: 86400 };
-        await webpush.sendNotification(user.push_sub, msg, options).catch(() => {
+        try {
+          const msg = '{ type: reminder }';
+          const options = { TTL: 86400 };
+          const pushSub = JSON.parse(user.push_sub);
+          await webpush.sendNotification(pushSub, msg, options);
+        } catch (err) {
           console.error(`Could not send reminder for user: ${user.email}`);
-        });
+        }
       }
     });
   }
