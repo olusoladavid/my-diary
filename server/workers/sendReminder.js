@@ -26,12 +26,16 @@ const processNotifications = async () => {
     users.forEach(async (user) => {
       if (user.reminderisset) {
         try {
-          const msg = '{ type: reminder }';
+          const msg = JSON.stringify({
+            title: 'What\'s on your mind today?',
+            body: 'Time to update your diary',
+            tag: 'reminder',
+          });
           const options = { TTL: 86400 };
           const pushSub = JSON.parse(user.push_sub);
           await webpush.sendNotification(pushSub, msg, options);
         } catch (err) {
-          console.error(`Could not send reminder for user: ${user.email}`);
+          console.error(`Could not send reminder for user: ${user.email} due to ${err.message}`);
         }
       }
     });
